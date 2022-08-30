@@ -7,30 +7,38 @@ import {
   View,
   PermissionsAndroid,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 
+// icons
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-import DevicesLists from './components/DevicesLists';
-
-import 'text-encoding-polyfill'
-
-import { stringToBytes } from "convert-string";
-
-import EscPosEncoder from 'esc-pos-encoder';
+// components
+import ButtonsOptions from './components/ButtonsOptions';
+import InputOptions from "./components/InputOptions";
+import Header from "./components/Header";
+import RadioButton from './components/RadioButton';
 
 import { BleManager } from 'react-native-ble-plx';
 import { Service } from 'react-native-ble-plx';
 import { NativeDevice } from 'react-native-ble-plx';
 import base64 from 'react-native-base64'
-import { Buffer } from 'buffer';
-import { Console } from 'console';
+import { Buffer, INSPECT_MAX_BYTES } from 'buffer';
 
 const App = () => {
   
   const manager = new BleManager();
   const serv = new Service(NativeDevice, manager)
 
-  const [turnOn, setTurnOn] = useState(false)
+  // States Of The Application
+  const [Weightt, setWeightt] = useState()
+  const [farm, setFarm] = useState("Fazenda feliz")
+  const [earing, setearing] = useState("586974563d")
+  const [age, setAge] = useState()
+  const [race, setRace] = useState()
+  const [value, setValue] = useState()
+
+  const [stopScan, setstopScan] = useState(false)
   const [devices, setDevices] = useState([])
   const [isScanFinished, setIsScanFinished] = useState(false)
   const [onlyOneWeightIsGot, setonlyOneWeightIsGot] = useState(false)
@@ -40,7 +48,6 @@ const App = () => {
   const [gettingWeight, setgettingWeight] = useState("")
   const [isChoose, setisChoose] = useState(false)
   const [objectFromChildBalance, setobjectFromChildBalance] = useState()
-
 
   // setting data to the weight works
   const [services, setServices] = useState()
@@ -135,6 +142,7 @@ const App = () => {
       
       if(error){
         
+        console.log(error)
         // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
         alert(error)
 
@@ -144,46 +152,23 @@ const App = () => {
       if(listOfDevices){
         
         setDevices(oldArray=>[...oldArray, listOfDevices])
+        
 
       }
       
-      
+      // espera terminar todo o scan e espera 1 sec pra dar o stop
+      setTimeout(()=>{
+        manager.stopDeviceScan()
+        setIsScanFinished(true)
+        console.log("finished scanning")
+      }, 1000)
     });
 
-    // espera terminar todo o scan e espera 1 sec pra dar o stop
-    setTimeout(()=>{
-      manager.stopDeviceScan()
-      setIsScanFinished(true)
-      console.log("finished scanning")
-    }, 1000)
-  }
-
-  // liga scan
-  const turnOnScan = () => {
-
-    if(turnOn){
-
-      theScan()
-      
-    }else{
-      Alert.alert("Bluetooth desligado", "Você precisa ligar o bluetooth", [
-        {
-          text: "Cancelar",
-          onPress: () => console.log("apertou cancelar"),
-          style: "cancel"
-        },
-        {
-          text: "ok",
-          onPress: () => console.log("apertou ok"),
-        }
-      ])
-    }
 
   }
-
 
   // pega características de algo ja pareado
-  const getData = async (theBalance) => {
+  const getData = (theBalance) => {
 
     theBalance[1].connect().then((balance)=>{
       
@@ -194,37 +179,70 @@ const App = () => {
       return data
     })
     .then((dataComplet)=>{
-
+      
       let base64Stringg = Buffer.from("{RW}").toString('base64')
       dataComplet.writeCharacteristicWithResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
       .then((result)=>{
 
-        result.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha)=>{
-            
-          console.log(cha)
-            
-            if(cha.value){
+        return result
+
+      }).then(()=>{
+
+        dataComplet.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha)=>{
+            console.log(err)
+            try{
               let weight_transformed = base64.decode(cha.value)
               setgettingWeight(weight_transformed)
-              alert("Peso", `Seu peso é: ${weight_transformed}`)
               return
-            }else{
-              alert(err)
+            }catch(err){
+              console.log("error", err)
             }
               
           })
 
       }).catch((errr)=>{
-        console.log(errr)
+
+        console.log("error", errr)
+
       });
 
     })
     .catch(err=>{
-      console.log(err)
-    })
 
-    // console.log("CAINDO EM CONNECT")
+      console.log("error", err)
+
+    }).finally(()=>{
+
+      alert(gettingWeight)
+
+    })
     
+  }
+
+  const ScanAndConnect = () => {
+    manager.startDeviceScan(null, {allowDuplicates: false}, (error, listOfDevices) => {
+      
+      if(error){
+        
+        // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
+        alert(error)
+
+        return
+      }
+
+      if(listOfDevices.id == "C7:C6:8B:C9:9F:2D"){
+        
+        setDevices(oldArray=>[...oldArray, listOfDevices])
+        manager.stopDeviceScan()
+      }
+      
+      // espera terminar todo o scan e espera 1 sec pra dar o stop
+    //  setTimeout(()=>{
+    //   manager.stopDeviceScan()
+    //   setIsScanFinished(true)
+    //   console.log("finished scanning")
+    // }, 1000)
+    });
   }
 
   React.useEffect(() => {
@@ -232,13 +250,28 @@ const App = () => {
     const subscription = manager.onStateChange((state) => {
 
         if(state === 'PoweredOn'){
-          setTurnOn(true)
+
+          // ScanAndConnect()
+          console.log("Bluetooth ligado")
+
         }else{
-          setTurnOn(false)
+          
+          Alert.alert("Bluetooth desligado", "Você precisa ligar o bluetooth e conectar na balança", [
+            {
+              text: "Cancelar",
+              onPress: () => console.log("apertou cancelar"),
+              style: "cancel"
+            },
+            {
+              text: "ok",
+              onPress: () => console.log("apertou ok"),
+            }
+          ])
+          
         }
 
     }, true);
-    
+
     return () => {
       subscription.remove()
     };
@@ -251,51 +284,141 @@ const App = () => {
 
   }
 
+  const gettingMacID = () => {
+    alert(`your mac adress is: ${devices[0].id}`)
+  }
+  
+  const getTheCurrentWeight = () => {
 
-  // pedir duas permissões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
+    devices[0]
+    .connect()
+    .then((deviceConnected)=>{
+
+      return deviceConnected.discoverAllServicesAndCharacteristics()
+
+    })
+    .then((data)=>{
+
+      let base64Stringg = Buffer.from("{RW}").toString('base64')
+
+      data.writeCharacteristicWithoutResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
+      .then((oldCharacterist)=>{
+
+        data.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha)=>{
+          
+          try{
+
+            let weight_transformed = base64.decode(cha.value)
+
+            console.log(weight_transformed)
+            Alert.alert("Peso", `Importar o peso: ${weight_transformed}`, [
+              {
+                text: "Errado",
+                onPress: () => console.log("apertou cancelar"),
+                style: "cancel"
+              },
+              {
+                text: "Correto",
+                onPress: () => setWeightt(weight_transformed),
+              }
+            ])
+
+          }catch(err){
+            
+            if(err){
+              console.log("error", err)
+              getTheCurrentWeight()
+            }
+            
+          }
+            
+        })
+
+      })
+
+        
+    })
+    .catch((err)=>{
+
+      alert(err)
+
+    })
+    .finally(()=>{})
+    
+    devices[0].onDisconnected((err, dev)=>{
+      console.log(dev)
+    })
+  }
+
+
+  // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={[styles.form, {flexDirection: 'row'}]}>
+      <SafeAreaView style={styles.container}>
 
-      <View style={{marginRight: 20}}>
-          <Text style={styles.text}>Encontrar balança</Text>
-          <Button onPress={turnOnScan} title={"Clique aqui"}/>
+        <View style={styles.mainHeader}>
+
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={ScanAndConnect}>
+                <Icon name="gear" size={30} color={'#E9FFF9'}/>
+              </TouchableOpacity>
+            </View>
+
+            
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20}}>Scan & connect</Text>
+              <TouchableOpacity onPress={ScanAndConnect}>
+                <Icon name="search" size={30} color={'#E9FFF9'}/>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+
         </View>
 
+        {/* <View style={styles.line}/> */}
+
+        <View style={{height: 435}}>
+
+          <Text style={{color: 'green'}}>To start the scan you need to be near of the pheriphal</Text>
+
+          {devices.length > 0 ? (
+          <View>
+            <Text>device found</Text>
+            <Text>What do you want ?</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: 30}}>
+              <TouchableOpacity onPress={getTheCurrentWeight} style={{borderWidth: 2, borderColor: 'red', padding: 15, borderRadius: 5}}>
+                <Text>Get the weight</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={gettingMacID} style={{borderWidth: 2, borderColor: 'lightgreen', padding: 15, borderRadius: 5}}>
+                <Text>Get the MAC ID</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Form */}
+            <View>
+              <Header theader={"Cadastro"}/>
+
+              <InputOptions title={"Fazenda"} value={farm} isEnable={false}/>
+              <InputOptions title={"Peso"} value={Weightt} isEnable={false}/>
+              <InputOptions title={"Brinco"} value={earing} isEnable={false}/>
+              <InputOptions title={"Idade"} value={setAge} Pholder={"Ex: 5"} isNumeric={true} />
+              <InputOptions title={"Raça"} value={setRace} Pholder={"Ex: Brahman"} isEnable={true}/>
+              <InputOptions title={"Custo médio"} value={setValue} isNumeric={true}/>
+
+            </View>
+          </View>
+          ) : (<></>)}
+
+        </View>
+
+      {/* buttons */}
         <View>
-          <Text style={styles.text}>Limpar busca</Text>
-          <Button onPress={()=>setDevices([])} title={"Clique aqui"}/>
+            
         </View>
-      </View>
-
-      <View style={[styles.form, {flexDirection: 'row'}]}>
-        <View style={styles.form}>
-          <Text style={styles.text}>Request permission</Text>
-          <Button onPress={requestLocationPermission} title={"Clique aqui"}/>
-        </View>
-
-        <View style={styles.form}>
-          <Text style={styles.text}>request weight</Text>
-          <Button onPress={gettingFromChild} title={"Clique aqui"}/>
-        </View>
-      </View>
-
-      <View style={styles.line}/>
-
-      <SafeAreaView style={{height: 400}}>
-
-        {isScanFinished && (
-          <DevicesLists devices={devices} valFunc={gettingFromChild}/>
-        )}
-
       </SafeAreaView>
-
-      {onlyOneWeightIsGot ? (
-      <View style={{height: 100, borderColor: 'red', borderWidth: 1}}>
-        <Text>{gettingWeight}</Text>
-      </View>) : (<></>)}
-
-    </SafeAreaView>
   );
 };
 
@@ -304,7 +427,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#c9c3c3'
+    backgroundColor: '#ffff'
   },
   form: {
     padding: 10
@@ -313,9 +436,17 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   line: {
-    borderColor: 'black',
-    borderWidth: 1,
-    width: '95%'
+    borderColor: 'grey',
+    borderWidth: 2,
+    width: '100%',
+    elevation: 10
+  },
+  mainHeader: {
+    width: '100%',
+    padding: 12,
+    backgroundColor: "#3F51B5",
+    borderBottomColor: 'rgba(0, 0, 0, 0.3)',
+    borderBottomWidth: 3
   }
 });
 
