@@ -8,16 +8,19 @@ import {
   PermissionsAndroid,
   Alert,
   TouchableOpacity,
+  ScrollView,
+  TouchableHighlight,
 } from 'react-native';
 
 // icons
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // components
 import ButtonsOptions from './components/ButtonsOptions';
 import InputOptions from "./components/InputOptions";
 import Header from "./components/Header";
 import RadioButton from './components/RadioButton';
+import ButtonAgeCattle from './components/ButtonAgeCattle';
 
 import { BleManager } from 'react-native-ble-plx';
 import { Service } from 'react-native-ble-plx';
@@ -40,6 +43,7 @@ const App = () => {
 
   const [stopScan, setstopScan] = useState(false)
   const [devices, setDevices] = useState([])
+  const [deviceStick, setdeviceStick] = useState([])
   const [isScanFinished, setIsScanFinished] = useState(false)
   const [onlyOneWeightIsGot, setonlyOneWeightIsGot] = useState(false)
   const [balance, setBalance] = useState([])
@@ -288,6 +292,29 @@ const App = () => {
     alert(`your mac adress is: ${devices[0].id}`)
   }
   
+
+  const getFileOfEarings = () => {
+    manager.startDeviceScan(null, {allowDuplicates: false}, (err, listOfDevice) => {
+      
+      if(err){
+        alert(err)
+        return
+      }
+
+      if(listOfDevice){
+        console.log(listOfDevice)
+        
+      }
+
+    })
+    setTimeout(()=>{
+      manager.stopDeviceScan()
+      setIsScanFinished(true)
+      console.log("finished scanning")
+    }, 1000)
+  }
+
+  
   const getTheCurrentWeight = () => {
 
     devices[0]
@@ -350,11 +377,9 @@ const App = () => {
     })
   }
 
-
   // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
   return (
       <SafeAreaView style={styles.container}>
-
         <View style={styles.mainHeader}>
 
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -369,7 +394,7 @@ const App = () => {
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20}}>Scan & connect</Text>
               <TouchableOpacity onPress={ScanAndConnect}>
-                <Icon name="search" size={30} color={'#E9FFF9'}/>
+                <Icon name="clipboard-search" size={30} color={'#E9FFF9'}/>
               </TouchableOpacity>
             </View>
 
@@ -377,23 +402,17 @@ const App = () => {
 
         </View>
 
-        {/* <View style={styles.line}/> */}
-
-        <View style={{height: 435}}>
-
-          <Text style={{color: 'green'}}>To start the scan you need to be near of the pheriphal</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={{color: '#424242'}}>Para iniciar o scan precisa estar perto da balança</Text>
+          </View>
 
           {devices.length > 0 ? (
           <View>
-            <Text>device found</Text>
-            <Text>What do you want ?</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: 30}}>
-              <TouchableOpacity onPress={getTheCurrentWeight} style={{borderWidth: 2, borderColor: 'red', padding: 15, borderRadius: 5}}>
-                <Text>Get the weight</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={gettingMacID} style={{borderWidth: 2, borderColor: 'lightgreen', padding: 15, borderRadius: 5}}>
-                <Text>Get the MAC ID</Text>
+            <View style={styles.containerButtonsForAction}>
+              <TouchableOpacity onPress={getTheCurrentWeight} style={styles.buttonsForActions}>
+                <Text style={{fontSize: 20,color: '#E9FFF9', marginRight: 5}}>Peso</Text>
+                <Icon name="cow" size={30} color={"#E9FFF9"}/>
               </TouchableOpacity>
             </View>
 
@@ -403,21 +422,31 @@ const App = () => {
 
               <InputOptions title={"Fazenda"} value={farm} isEnable={false}/>
               <InputOptions title={"Peso"} value={Weightt} isEnable={false}/>
-              <InputOptions title={"Brinco"} value={earing} isEnable={false}/>
-              <InputOptions title={"Idade"} value={setAge} Pholder={"Ex: 5"} isNumeric={true} />
+              <InputOptions title={"Brinco"} value={setearing} isEnable={true}/>
+              {/* age of the cattle */}
+              <Text style={{color: "#424242", paddingLeft: 3, marginLeft: 8}}>Idade</Text>
+              <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{padding: 3, marginTop: 2}}>
+                <ButtonAgeCattle gettingValue={setAge}/>
+              </ScrollView>
               <InputOptions title={"Raça"} value={setRace} Pholder={"Ex: Brahman"} isEnable={true}/>
-              <InputOptions title={"Custo médio"} value={setValue} isNumeric={true}/>
+              <InputOptions title={"Custo médio"} value={setValue} Pholder={"Ex: 2500,5"} isNumeric={true}/>
 
             </View>
           </View>
           ) : (<></>)}
 
-        </View>
-
-      {/* buttons */}
-        <View>
-            
-        </View>
+          {/* buttons */}
+          {devices.length > 0 ? (
+            <View style={{padding: 2, alignItems: 'flex-end', marginTop: 3}}>
+              <TouchableOpacity style={styles.saveButton}>
+                <Icon name="content-save-cog" size={35} color={'#E9FFF9'}/>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <></>
+          )}
+          
+        </ScrollView>
       </SafeAreaView>
   );
 };
@@ -428,12 +457,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#ffff'
-  },
-  form: {
-    padding: 10
-  },
-  text: {
-    marginBottom: 10
   },
   line: {
     borderColor: 'grey',
@@ -447,6 +470,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#3F51B5",
     borderBottomColor: 'rgba(0, 0, 0, 0.3)',
     borderBottomWidth: 3
+  },
+  buttonsForActions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 5,
+    backgroundColor: "#424242",
+    width: 100,
+  },
+  containerButtonsForAction: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  saveButton: {
+    borderRadius: 999,
+    width: 65,
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: "#424242"
   }
 });
 
