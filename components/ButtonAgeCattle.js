@@ -102,7 +102,7 @@ const style = StyleSheet.create({
         borderRadius: 999,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#424242'
+        backgroundColor: '#CCCCCC'
     },
     containerButtonPressed: {
         marginRight: 5,
@@ -110,11 +110,10 @@ const style = StyleSheet.create({
         borderRadius: 999,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#E9FFF9',
-        color: "#424242",
+        backgroundColor: '#A2E8AE',
     },
     textColor: {
-        color: '#E9FFF9',
+        color: '#424242',
     },
     textPressed: {
         color: "#424242",
