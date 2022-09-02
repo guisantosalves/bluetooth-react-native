@@ -29,6 +29,7 @@ import { NativeDevice } from 'react-native-ble-plx';
 import base64 from 'react-native-base64'
 import { Buffer, INSPECT_MAX_BYTES } from 'buffer';
 import { deepStrictEqual } from 'assert';
+import { FloatingAction } from 'react-native-floating-action';
 
 const Cadastro = ({navigation}) => {
   

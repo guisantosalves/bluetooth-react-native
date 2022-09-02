@@ -18,6 +18,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { FloatingAction } from 'react-native-floating-action';
 
+import CardsReports from '../components/CardsReports';
+
 const Home = ({navigation}) => {
 
   // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
@@ -26,19 +28,19 @@ const Home = ({navigation}) => {
     {
       text: "Home",
       icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
-      name: "bt_accessibility",
+      name: "home",
       position: 1
     },
     {
       text: "Cadastro",
       icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
-      name: "bt_accessibility",
+      name: "cadastro",
       position: 2
     },
     {
       text: "instruções",
       icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
-      name: "bt_accessibility",
+      name: "instrucao",
       position: 3
     }
     
@@ -51,22 +53,38 @@ const Home = ({navigation}) => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
  
               <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
-              <TouchableOpacity onPress={()=>navigation.push('Cadastro')}>
-                <Icon name="user" size={30} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
+                  <Icon name="file-text" size={30} color={'#E9FFF9'}/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>navigation.push('Cadastro')}>
+                  <Icon name="user" size={30} color={'#E9FFF9'}/>
+                </TouchableOpacity>
+              </View>
           </View>
 
         </View>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text>I AM HOME</Text>
+        
+        {/* the latest insertions */}
+        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', padding: 10}}>
+          <CardsReports />
+          <CardsReports />
+          <CardsReports />
+          <CardsReports />
+          <CardsReports />
+          <CardsReports />
         </ScrollView>
 
         <FloatingAction 
           actions={action}
           onPressItem={(item)=>{
-            console.log(item)
+            if(item === "home"){
+              navigation.push("Home")
+            }else if(item === "cadastro"){
+              navigation.push("Cadastro")
+            }else if(item === "instrucao"){
+              navigation.push("Instructions")
+            }
           }}
         />
       </SafeAreaView>
