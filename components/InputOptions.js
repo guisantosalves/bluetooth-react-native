@@ -9,7 +9,6 @@ import { View,
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 // components
 import ButtonAgeCattle from "./ButtonAgeCattle";
 import RadioButton from "./RadioButton";
@@ -24,21 +23,15 @@ const InputOptions = ({weight}) => {
     const [completeData, setCompleteData] = React.useState([])
     const [isPressed, setIsPressed] = React.useState(false)
 
-    React.useEffect(()=>{
-        if(isPressed == true){
-            const data = {
-                fazenda: farm,
-                brinco: earing,
-                idade: age,
-                raca: race,
-                valorMedia: value,
-                sexo: sex,
-            }
-            setCompleteData(oldArray => [...oldArray, data])
-            console.log(completeData)
-            setIsPressed(false)
+    const insertingInRealmDB = async () => {
+        const newString = weight.replace('[', '')
+        const correctString = newString.replace(']', '')
+        try{
+
+        }catch(e){
+            alert(e)
         }
-    }, [isPressed])
+    }
 
     return(
         <>
@@ -97,7 +90,7 @@ const InputOptions = ({weight}) => {
             </KeyboardAvoidingView>
 
             <View style={{padding: 2, alignItems: 'flex-end', marginTop: 3}}>
-              <TouchableOpacity style={style.saveButton} onPress={()=>setIsPressed(true)}>
+              <TouchableOpacity style={style.saveButton} onPress={insertingInRealmDB}>
                 <Icon name="cloud-upload" size={40} color={'#E9FFF9'}/>
               </TouchableOpacity>
             </View>

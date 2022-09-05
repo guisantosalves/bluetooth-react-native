@@ -11,6 +11,9 @@ import Instructions from './screens/Instructions';
 import Login from './screens/Login';
 import Cadastro from './screens/Cadastro';
 
+  //I can use this to delete the file
+  // Realm.deleteFile(Pesagem)
+
 const App = () => {
 
   const Stack = createNativeStackNavigator();

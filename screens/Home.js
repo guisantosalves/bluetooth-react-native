@@ -20,6 +20,7 @@ import { FloatingAction } from 'react-native-floating-action';
 
 import CardsReports from '../components/CardsReports';
 
+
 const Home = ({navigation}) => {
 
   // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
@@ -45,6 +46,8 @@ const Home = ({navigation}) => {
     }
     
   ]
+
+  
   return (
       <SafeAreaView style={styles.container}>
         

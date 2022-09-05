@@ -29,6 +29,7 @@
     "react-native-screens": "^3.17.0",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
+    "realm": "^10.20.0",
     "text-encoding-polyfill": "^0.6.7",
     "uuid": "^8.3.2"
   },
