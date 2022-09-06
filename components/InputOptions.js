@@ -12,6 +12,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // components
 import ButtonAgeCattle from "./ButtonAgeCattle";
 import RadioButton from "./RadioButton";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from "react-native-uuid";
 
 const InputOptions = ({weight}) => {
     const [farm, setFarm] = React.useState("Fazenda feliz")
@@ -27,7 +29,29 @@ const InputOptions = ({weight}) => {
         const newString = weight.replace('[', '')
         const correctString = newString.replace(']', '')
         try{
+            const objetToInsert = {
+                fazenda: farm,
+                brinco: earing,
+                peso: parseFloat(correctString),
+                idade: age,
+                raca: race,
+                valorMedio: parseFloat(value),
+                sexo: sex
+            }
 
+            const jsonValue = JSON.stringify(objetToInsert)
+
+            
+            await AsyncStorage.setItem(`${uuid.v4()}`, jsonValue)
+            
+            const allk = await AsyncStorage.getAllKeys()
+            const ArrayOfJsonStr = await AsyncStorage.multiGet(allk)
+
+            ArrayOfJsonStr.map((item, index)=>{
+               console.log(JSON.parse(item[1]))
+            })
+            // await AsyncStorage.getItem()
+            alert("Cadastrado com sucesso")
         }catch(e){
             alert(e)
         }
@@ -89,7 +113,7 @@ const InputOptions = ({weight}) => {
                 </View>
             </KeyboardAvoidingView>
 
-            <View style={{padding: 2, alignItems: 'flex-end', marginTop: 3}}>
+            <View style={{padding: 2, alignItems: 'flex-start', marginTop: 3}}>
               <TouchableOpacity style={style.saveButton} onPress={insertingInRealmDB}>
                 <Icon name="cloud-upload" size={40} color={'#E9FFF9'}/>
               </TouchableOpacity>

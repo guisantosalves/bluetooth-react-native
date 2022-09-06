@@ -25,7 +25,7 @@ const CardsReports = () => {
     const gettingTheDataFromRealm = () => {
       try{
       // abro conexao no meu model e fecho quando executo ele
-
+        
       
       }catch(e){
         alert(e)

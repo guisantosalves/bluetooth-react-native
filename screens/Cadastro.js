@@ -30,6 +30,7 @@ import base64 from 'react-native-base64'
 import { Buffer, INSPECT_MAX_BYTES } from 'buffer';
 import { deepStrictEqual } from 'assert';
 import { FloatingAction } from 'react-native-floating-action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Cadastro = ({navigation}) => {
   
@@ -39,6 +40,7 @@ const Cadastro = ({navigation}) => {
   // States Of The Application
   const [Weightt, setWeightt] = useState()
 
+  const [dataFromASstate, setdataFromASstate] = useState()
   const [stopScan, setstopScan] = useState(false)
   const [devices, setDevices] = useState([])
   const [deviceStick, setdeviceStick] = useState([])
@@ -221,6 +223,9 @@ const Cadastro = ({navigation}) => {
     
   }
 
+  // usar redux para fazer o dispatch do device, para nao precisar fazendo o scan sempre
+  // ta dando erro nisso, tem que concertar
+  // ou colocar no asyncStorage, já funciona
   const ScanAndConnect = () => {
     manager.startDeviceScan(null, {allowDuplicates: false}, (error, listOfDevices) => {
       
@@ -274,6 +279,8 @@ const Cadastro = ({navigation}) => {
 
     }, true);
 
+    getItemFromAS();
+    
     return () => {
       subscription.remove()
     };
@@ -314,7 +321,7 @@ const Cadastro = ({navigation}) => {
 
   
   const getTheCurrentWeight = () => {
-
+  
     devices[0]
     .connect()
     .then((deviceConnected)=>{
@@ -375,6 +382,21 @@ const Cadastro = ({navigation}) => {
     })
   }
 
+  const getItemFromAS = async () => {
+    const dataResult = await AsyncStorage.getItem('pesagem')
+    setdataFromASstate(dataResult)
+  }
+
+  const action = [
+    {
+      text: "Home",
+      icon: <Icon name="home" size={30} color={'#E9FFF9'}/>,
+      name: "home",
+      position: 1
+    },
+    
+  ]
+
   // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
   return (
       <SafeAreaView style={styles.container}>
@@ -416,6 +438,14 @@ const Cadastro = ({navigation}) => {
             <View>
               <Header theader={"Cadastro"}/>
               <InputOptions weight={Weightt}/>
+              <FloatingAction 
+                actions={action}
+                onPressItem={(item)=>{
+                  if(item === "home"){
+                    navigation.push('Home')
+                  }
+                }}
+              />
             </View>
           </View>
           ) : (

@@ -12,6 +12,7 @@ import {
   TouchableHighlight,
   KeyboardAvoidingView
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -19,77 +20,123 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { FloatingAction } from 'react-native-floating-action';
 
 import CardsReports from '../components/CardsReports';
+import RequestPermissionUser from './ResquestPermission';
 
+// redux
+import { useSelector } from 'react-redux';
 
 const Home = ({navigation}) => {
 
-  // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
+  const requestsFromUser = useSelector((state)=>state.counter.requestResult)
 
+  const [dataToDisplayFromAS, setdataToDisplayFromAS] = React.useState([])
+  
   const action = [
     {
       text: "Home",
-      icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
+      icon: <Icon name="home" size={30} color={'#E9FFF9'}/>,
       name: "home",
       position: 1
     },
     {
       text: "Cadastro",
-      icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
+      icon: <Icon name="archive" size={25} color={'#E9FFF9'}/>,
       name: "cadastro",
       position: 2
     },
     {
       text: "instruções",
-      icon: <Icon name="user" size={30} color={'#E9FFF9'}/>,
+      icon: <Icon name="comments-o" size={25} color={'#E9FFF9'}/>,
       name: "instrucao",
       position: 3
     }
     
   ]
 
-  
+  const gettingItem = async () => {
+    try{
+      const allkeys = await AsyncStorage.getAllKeys()
+      const dataFromAS = await AsyncStorage.multiGet(allkeys)
+      if(dataFromAS !== null){
+        dataFromAS.map((item, index)=>{
+          setdataToDisplayFromAS(oldValue => [...oldValue, JSON.parse(item[1])])
+        })
+      }else{
+        alert("nao deu")
+      }
+    }catch(e){
+      alert(e)
+    }
+  }
+
+  React.useEffect(()=>{
+    gettingItem()
+  }, [])
+
   return (
       <SafeAreaView style={styles.container}>
-        
-        <View style={styles.mainHeader}>
+        {requestsFromUser ? (
+          <>
+            <View style={styles.mainHeader}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
- 
-              <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
-                  <Icon name="file-text" size={30} color={'#E9FFF9'}/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>navigation.push('Cadastro')}>
-                  <Icon name="user" size={30} color={'#E9FFF9'}/>
-                </TouchableOpacity>
+                  <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
+                      <Icon name="file-text" size={30} color={'#E9FFF9'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.push('User')}>
+                      <Icon name="user" size={30} color={'#E9FFF9'}/>
+                    </TouchableOpacity>
+                  </View>
               </View>
-          </View>
 
-        </View>
-        
-        {/* the latest insertions */}
-        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', padding: 10}}>
-          <CardsReports />
-          <CardsReports />
-          <CardsReports />
-          <CardsReports />
-          <CardsReports />
-          <CardsReports />
-        </ScrollView>
+              </View>
 
-        <FloatingAction 
-          actions={action}
-          onPressItem={(item)=>{
-            if(item === "home"){
-              navigation.push("Home")
-            }else if(item === "cadastro"){
-              navigation.push("Cadastro")
-            }else if(item === "instrucao"){
-              navigation.push("Instructions")
-            }
-          }}
-        />
+              {/* the latest insertions */}
+              <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', padding: 10}}>
+              {dataToDisplayFromAS.map((item, index)=>(
+              <View key={index} style={{borderWidth: 1, borderColor: 'blue', height: 150, borderRadius: 5, backgroundColor: '#E9FFF9', marginTop: 5, marginBottom: 15}}>
+              <View style={{width: '100%', height: 45, borderTopRightRadius: 3, borderTopLeftRadius: 3, backgroundColor: '#3F51B5',
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Text style={{color: '#E9FFF9', fontSize: 16, marginLeft: 5}}>Brinco: {item.brinco}</Text>
+                <Text style={{color: '#E9FFF9', fontSize: 13, marginBottom: 20, marginRight: 5}}>{item.date}</Text>
+              </View>
+              <View style={{flexDirection: 'row', height: '100%'}}>
+                <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-start', padding: 5}}>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Peso(KG): {item.peso}</Text>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Raça: {item.raca}</Text>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Sexo: {item.sexo}</Text>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Idade: {item.idade}</Text>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {item.valorMedio}</Text>
+                </View>
+                <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-end', padding: 5}}>
+                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Fazenda: {item.fazenda}</Text>
+                  <TouchableOpacity onPress={()=>console.log(item.brinco)}>
+                    <Icon name="remove" size={38} color={'#ea7070'}/>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              </View>
+              ))}
+              </ScrollView>
+
+              <FloatingAction 
+              actions={action}
+              onPressItem={(item)=>{
+                if(item === "home"){
+                  navigation.push("Home")
+                }else if(item === "cadastro"){
+                  navigation.push("Cadastro")
+                }else if(item === "instrucao"){
+                  navigation.push("Instructions")
+                }
+              }}
+              />
+          </>
+        ) : (
+          <RequestPermissionUser />
+        )}
       </SafeAreaView>
   );
 };
