@@ -31,6 +31,7 @@ const Home = ({navigation}) => {
 
   const [dataToDisplayFromAS, setdataToDisplayFromAS] = React.useState([])
   
+  const [requestVerification, setrequestVerification] = React.useState()
   const action = [
     {
       text: "Home",
@@ -57,10 +58,13 @@ const Home = ({navigation}) => {
     try{
       const allkeys = await AsyncStorage.getAllKeys()
       const dataFromAS = await AsyncStorage.multiGet(allkeys)
+
       if(dataFromAS !== null){
-        dataFromAS.map((item, index)=>{
-          setdataToDisplayFromAS(oldValue => [...oldValue, JSON.parse(item[1])])
-        })
+          dataFromAS.map((item, index)=>{
+            if(item[0] != "@permissions"){
+              setdataToDisplayFromAS(oldValue => [...oldValue, JSON.parse(item[1])])
+            }
+          })
       }else{
         alert("nao deu")
       }
@@ -75,7 +79,6 @@ const Home = ({navigation}) => {
 
   return (
       <SafeAreaView style={styles.container}>
-        {requestsFromUser ? (
           <>
             <View style={styles.mainHeader}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -134,9 +137,6 @@ const Home = ({navigation}) => {
               }}
               />
           </>
-        ) : (
-          <RequestPermissionUser />
-        )}
       </SafeAreaView>
   );
 };

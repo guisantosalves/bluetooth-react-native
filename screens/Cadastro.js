@@ -57,14 +57,40 @@ const Cadastro = ({navigation}) => {
   const [services, setServices] = useState()
   const [characteristc, setcharacteristc] = useState()
 
+  // permissions
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
+          title: 'permissão de localização para o bluetooth scanning',
+          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+          buttonNeutral: 'Perguntar depois',
+          buttonNegative: 'Cancelar',
+          buttonPositive: 'OK',
+        },
+      ); 
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission for bluetooth scanning granted');
+        return true;
+      } else {
+        console.log('Lowcation permission for bluetooth scanning revoked');
+        console.log("AQUICORNO 1")
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+}
+
+const requestBLUETOOTH_ADMINPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT, {
           title: 'Location permission for bluetooth scanning',
-          message: 'wahtever',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
+          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+          buttonNeutral: 'Perguntar depois',
+          buttonNegative: 'Cancelar',
           buttonPositive: 'OK',
         },
       ); 
@@ -73,103 +99,40 @@ const Cadastro = ({navigation}) => {
         return true;
       } else {
         console.log('Location permission for bluetooth scanning revoked');
+        console.log("AQUICORNO 2")
         return false;
       }
     } catch (err) {
-      console.warn(err);
+      console.log(err);
       return false;
     }
-  }
+}
 
-  const requestBluetoothPermission = async () => {
-    try {
-
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        {
-          title: "bluetooth Permission",
-          message:
-            "O aplicativo precisa acessar o seu bluetooth ",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK"
-        }
-      )
-
-    } catch (err) {
-      console.warn(err);
-    }
-  }
-
-  // array of bytes
-  function toUTF8Array(str) {
-    let utf8 = [];
-    for (let i = 0; i < str.length; i++) {
-        let charcode = str.charCodeAt(i);
-        if (charcode < 0x80) utf8.push(charcode);
-        else if (charcode < 0x800) {
-            utf8.push(0xc0 | (charcode >> 6),
-                      0x80 | (charcode & 0x3f));
-        }
-        else if (charcode < 0xd800 || charcode >= 0xe000) {
-            utf8.push(0xe0 | (charcode >> 12),
-                      0x80 | ((charcode>>6) & 0x3f),
-                      0x80 | (charcode & 0x3f));
-        }
-        // surrogate pair
-        else {
-            i++;
-            // UTF-16 encodes 0x10000-0x10FFFF by
-            // subtracting 0x10000 and splitting the
-            // 20 bits of 0x0-0xFFFFF into two halves
-            charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-                      | (str.charCodeAt(i) & 0x3ff));
-            utf8.push(0xf0 | (charcode >>18),
-                      0x80 | ((charcode>>12) & 0x3f),
-                      0x80 | ((charcode>>6) & 0x3f),
-                      0x80 | (charcode & 0x3f));
-        }
-    }
-    return utf8;
-  }
-
-  // hex string to byte
-  function hexToBytes(hex) {
-    for (var bytes = [], c = 0; c < hex.length; c += 2)
-        bytes.push(parseInt(hex.substr(c, 2), 16));
-    return bytes;
-  }
-
-  // o scan
-  const theScan = () => {
-    manager.startDeviceScan(null, {allowDuplicates: false}, (error, listOfDevices) => {
+const BLUETOOTH_ADVERTISErequestPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+        title: 'Location permission for bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
+    ); 
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Location permission for bluetooth scanning granted');
+      return true;
+    } else {
+      console.log('Location permission for bluetooth scanning revoked');
+      console.log("AQUICORNO 4")
+      return false;
       
-      if(error){
-        
-        console.log(error)
-        // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
-        alert(error)
-
-        return
-      }
-
-      if(listOfDevices){
-        
-        setDevices(oldArray=>[...oldArray, listOfDevices])
-        
-
-      }
-      
-      // espera terminar todo o scan e espera 1 sec pra dar o stop
-      setTimeout(()=>{
-        manager.stopDeviceScan()
-        setIsScanFinished(true)
-        console.log("finished scanning")
-      }, 1000)
-    });
-
-
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
   }
+}
 
   // pega características de algo ja pareado
   const getData = (theBalance) => {
@@ -223,10 +186,20 @@ const Cadastro = ({navigation}) => {
     
   }
 
+  const permissions = () => {
+    requestLocationPermission();
+    requestBLUETOOTH_ADMINPermission()
+    BLUETOOTH_ADVERTISErequestPermission()
+
+    
+    console.log("ok")
+  }
   // usar redux para fazer o dispatch do device, para nao precisar fazendo o scan sempre
   // ta dando erro nisso, tem que concertar
   // ou colocar no asyncStorage, já funciona
   const ScanAndConnect = () => {
+
+    permissions()
     manager.startDeviceScan(null, {allowDuplicates: false}, (error, listOfDevices) => {
       
       if(error){
@@ -406,16 +379,14 @@ const Cadastro = ({navigation}) => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
             
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity onPress={()=>navigation.push('Instructions')}>
-                <Icon name="tooltip-text" size={30} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-            </View>
-
-            
-            <View style={{flexDirection: 'row'}}>
               <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20}}>Scan & connect</Text>
               <TouchableOpacity onPress={ScanAndConnect}>
                 <Icon name="clipboard-search" size={30} color={'#E9FFF9'}/>
+              </TouchableOpacity>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={()=>navigation.push("Home")}>
+                <Icon name="home" size={30} color={'#E9FFF9'}/>
               </TouchableOpacity>
             </View>
 
@@ -438,14 +409,6 @@ const Cadastro = ({navigation}) => {
             <View>
               <Header theader={"Cadastro"}/>
               <InputOptions weight={Weightt}/>
-              <FloatingAction 
-                actions={action}
-                onPressItem={(item)=>{
-                  if(item === "home"){
-                    navigation.push('Home')
-                  }
-                }}
-              />
             </View>
           </View>
           ) : (

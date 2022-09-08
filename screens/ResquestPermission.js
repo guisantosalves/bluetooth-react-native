@@ -1,5 +1,7 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, PermissionsAndroid } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 // icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,27 +10,32 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from "react-redux";
 import { requestSender } from "../features/appSlice";
 
-const RequestPermissionUser = () => {
+const RequestPermissionUser = ({navigation}) => {
 
     const [isRequestAccepted, setisRequestAccepted] = React.useState();
     const dispatch = useDispatch()
 
     const [ACCESS_FINE_LOCATIONPerm, setACCESS_FINE_LOCATIONPerm] = React.useState();
     const [bluetoothRequest, setbluetoothRequest] = React.useState();
+    const [bluetoothScan, setbluetoothScan] = React.useState();
+    const [advertiseBluetooth, setadvertiseBluetooth] = React.useState();
+    const [isOkay, setisOkay] = React.useState(false);
+
 
     // ver a request a ser feita
     const gettingPermissions = () => {
 
+      try{
         requestLocationPermission();
         requestBLUETOOTH_ADMINPermission()
+        BLUETOOTH_SCANrequestPermission()
+        BLUETOOTH_ADVERTISErequestPermission()
 
-        if(ACCESS_FINE_LOCATIONPerm && bluetoothRequest){
-            // dispatch(requestSender({
-            //     requestResult: true,
-            // }))
-        }else{
-            alert("Precisamos de sua confirmação")
-        }
+        settingInRequestPermissionDB(true)
+        
+      }catch(e){
+        alert(e)
+      }
     }
 
     const requestLocationPermission = async () => {
@@ -68,10 +75,10 @@ const RequestPermissionUser = () => {
           ); 
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             console.log('Location permission for bluetooth scanning granted');
-            setbluetoothRequest(true);
+            setbluetoothScan(true);
           } else {
             console.log('Location permission for bluetooth scanning revoked');
-            setbluetoothRequest(false);
+            setbluetoothScan(false);
           }
         } catch (err) {
           console.log(err);
@@ -79,6 +86,74 @@ const RequestPermissionUser = () => {
         }
     }
 
+    const BLUETOOTH_SCANrequestPermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+            title: 'Location permission for bluetooth scanning',
+            message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+            buttonNeutral: 'Perguntar depois',
+            buttonNegative: 'Cancelar',
+            buttonPositive: 'OK',
+          },
+        ); 
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Location permission for bluetooth scanning granted');
+          setbluetoothRequest(true);
+        } else {
+          console.log('Location permission for bluetooth scanning revoked');
+          setbluetoothRequest(false);
+        }
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    }
+
+    const BLUETOOTH_ADVERTISErequestPermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+            title: 'Location permission for bluetooth scanning',
+            message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+            buttonNeutral: 'Perguntar depois',
+            buttonNegative: 'Cancelar',
+            buttonPositive: 'OK',
+          },
+        ); 
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Location permission for bluetooth scanning granted');
+          setadvertiseBluetooth(true);
+        } else {
+          console.log('Location permission for bluetooth scanning revoked');
+          setadvertiseBluetooth(false);
+        }
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    }
+    
+    const settingInRequestPermissionDB = async (response) => {
+      const value = JSON.stringify(response)
+      await AsyncStorage.setItem("@permissions", value)
+      if(response){
+        verifyIfRequestPermissionExist()
+      }
+    }
+
+    const verifyIfRequestPermissionExist = async () => {
+      const value = await AsyncStorage.getItem("@permissions")
+      const valueParsed = JSON.parse(value)
+
+      if(valueParsed == true){
+        setisOkay(true)
+        navigation.navigate("Home")
+      }
+    }
+    // React.useEffect(()=>{
+    //   verifyIfRequestPermissionExist()
+    // }, [isOkay])
     return(
         <View style={style.container}>
 

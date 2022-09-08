@@ -12,11 +12,8 @@ const User = () => {
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
+            <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 5}}>
               <Icon name="file-text" size={30} color={'#E9FFF9'}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.push('User')}>
-              <Icon name="user" size={30} color={'#E9FFF9'}/>
             </TouchableOpacity>
           </View>
         </View>
