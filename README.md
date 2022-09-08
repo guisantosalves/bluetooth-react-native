@@ -1,3 +1,7 @@
+# bluetooth-react-native
+It's a simple project using bluetooth and react native<br>
+using react native and the package react-native-ble-plx 
+=======
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
