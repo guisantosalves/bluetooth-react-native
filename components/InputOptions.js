@@ -5,7 +5,8 @@ import { View,
     StyleSheet,
     ScrollView,
     KeyboardAvoidingView,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -14,10 +15,12 @@ import ButtonAgeCattle from "./ButtonAgeCattle";
 import RadioButton from "./RadioButton";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from "react-native-uuid";
+import ButtonRaceCattle from "./ButtonRaceCattle";
 
 const InputOptions = ({weight}) => {
     const [farm, setFarm] = React.useState("Fazenda feliz")
     const [earing, setearing] = React.useState()
+    const [eletronicEaring, seteletronicEaring] = React.useState()
     const [age, setAge] = React.useState()
     const [race, setRace] = React.useState()
     const [value, setValue] = React.useState()
@@ -28,15 +31,17 @@ const InputOptions = ({weight}) => {
     const insertingInRealmDB = async () => {
         const newString = weight.replace('[', '')
         const correctString = newString.replace(']', '')
+        const chagingCommom = value.replace(",",".")
         try{
             const objetToInsert = {
-                fazenda: farm,
+                fazenda: null,
                 brinco: earing,
+                brincoEletronico: eletronicEaring,
                 peso: parseFloat(correctString),
-                idade: age,
-                raca: race,
-                valorMedio: parseFloat(value),
-                sexo: sex
+                idade: parseInt(age),
+                raca: parseInt(race),
+                valorMedio: parseFloat(chagingCommom),
+                sexo: parseInt(sex),
             }
 
             const jsonValue = JSON.stringify(objetToInsert)
@@ -57,16 +62,42 @@ const InputOptions = ({weight}) => {
         }
     }
 
+    const cancel = () => {
+        setAge()
+        setRace()
+        setValue()
+        setSex()
+    }
+
+    const ConfirmVerification = () => {
+        Alert.alert(
+            "Deseja Confirmar o cadastro",
+            "Os dados que irão ser cadastrados não poderão ser editados nessa versão do app",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => {alert("preencha novamente");cancel()},
+                    style: "cancel"
+                },
+                {
+                    text: "Confirmar",
+                    onPress: () => {insertingInRealmDB()},
+                    style: "default"
+                }
+            ]
+        )
+    }
+
     return(
         <>
             {/* farm */}
             <KeyboardAvoidingView>
-                <View style={style.container}>
+                {/* <View style={style.container}>
                     <Text style={style.textColor}>Fazenda</Text>
                     <View style={style.inputStyle}>
                         <TextInput value={farm} placeholder={"Ex: Fazendinha"} keyboardType={"none"} editable={false}/>
                     </View>
-                </View>
+                </View> */}
 
                 {/* weight */}
                 <View style={style.container}>
@@ -78,25 +109,31 @@ const InputOptions = ({weight}) => {
 
                 {/* earings */}
                 <View style={style.container}>
-                    <Text style={style.textColor}>Brincos</Text>
+                    <Text style={style.textColor}>Brinco</Text>
                     <View style={style.inputStyle}>
-                        <TextInput onChangeText={(val)=>setearing(val)} multiline={true} numberOfLines={2}/>
+                        <TextInput value={earing?.trim()} onChangeText={(val)=>setearing(val)} multiline={false} numberOfLines={2} />
+                    </View>
+                </View>
+
+                {/* eletronic earings */}
+                <View style={style.container}>
+                    <Text style={style.textColor}>Brinco eletrônico</Text>
+                    <View style={style.inputStyle}>
+                        <TextInput value={eletronicEaring?.trim()} onChangeText={(val)=>seteletronicEaring(val)} multiline={false} numberOfLines={2} />
                     </View>
                 </View>
 
                 {/* age of cattle */}
                 <Text style={{color: "#424242", paddingLeft: 3, marginLeft: 8}}>Idade</Text>
-                <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{padding: 3, marginTop: 2}}>
+                <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{paddingLeft: 4, paddingRight: 4}}>
                     <ButtonAgeCattle gettingValue={setAge}/>
                 </ScrollView>
 
-                {/* raça */}
-                <View style={style.container}>
-                    <Text style={style.textColor}>Raça</Text>
-                    <View style={style.inputStyle}>
-                        <TextInput onChangeText={(val)=>setRace(val)} placeholder={"Ex: Nelore"}/>
-                    </View>
-                </View>
+                {/* race */}
+                <Text style={style.textColor}>Raça</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingLeft: 4, paddingRight: 4}}>
+                    <ButtonRaceCattle gettingValue={setRace}/>
+                </ScrollView>
 
                 {/*  radio button sex */}
                 <Text style={{color: '#424242', paddingLeft: 3, marginLeft: 8}}>Sexo</Text>
@@ -114,36 +151,10 @@ const InputOptions = ({weight}) => {
             </KeyboardAvoidingView>
 
             <View style={{padding: 2, alignItems: 'flex-start', marginTop: 3}}>
-              <TouchableOpacity style={style.saveButton} onPress={insertingInRealmDB}>
+              <TouchableOpacity style={style.saveButton} onPress={ConfirmVerification}>
                 <Icon name="cloud-upload" size={40} color={'#E9FFF9'}/>
               </TouchableOpacity>
             </View>
-            {/* {
-                isEnable === true ? (
-                    <View style={style.container}>
-                        <Text style={style.textColor}>{title}</Text>
-                        <View style={style.inputStyle}>
-                            <TextInput onChangeText={(val)=>setExem(val)} placeholder={Pholder}/>
-                        </View>
-                    </View>
-                ) : isEnable === false ? (
-                    <View style={style.container}>
-                        <Text style={style.textColor}>{title}</Text>
-                        <View style={style.inputStyle}>
-                            <TextInput value={setvalue} placeholder={Pholder} keyboardType={"none"} editable={false}/>
-                        </View>
-                    </View>
-                ) : isNumeric === true ?(
-                    <View style={style.container}>
-                        <Text style={style.textColor}>{title}</Text>
-                        <View style={style.inputStyle}>
-                            <TextInput onChangeText={(val)=>setvalue(val)} placeholder={Pholder} keyboardType={"numeric"}/>
-                        </View>
-                    </View>
-                ) : (
-                    <></>
-                )
-            } */}
         </>
     )
 }
