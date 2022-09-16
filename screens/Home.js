@@ -121,7 +121,7 @@ const Home = ({navigation}) => {
   }
 
   const DisplayMoney = (value) => {
-    const newVa = value.toString().replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    const newVa = value?.toString().replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     return newVa
   }
 
@@ -159,7 +159,7 @@ const Home = ({navigation}) => {
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Raça: {verifyRace(item.raca)}</Text>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Sexo: {verifySex(item.sexo)}</Text>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Idade: {verifyAge(item.idade)}</Text>
-                    <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {DisplayMoney(item.valorMedio)}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {DisplayMoney(item?.valorMedio)}</Text>
                   </View>
                   <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-end', padding: 5}}>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Brinco EL: {item.brincoEletronico}</Text>
