@@ -47,7 +47,7 @@ const InputOptions = ({ peso }) => {
             //     valorMedio: parseFloat(chagingCommom),
             //     sexo: parseInt(sex),
             // }
-            console.log(values)
+            console.log(values.observacao)
 
             const jsonValue = JSON.stringify(values)
 

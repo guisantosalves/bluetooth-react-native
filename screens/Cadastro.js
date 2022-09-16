@@ -130,7 +130,7 @@ const WriteAndReadDataRequestPermission = async () => {
   }
   const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
   const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-
+  console.log(readGranted, writeGranted)
   // if writeGranted doesn't exist
   if(!writeGranted || writeGranted == false|| !readGranted){
     alert("não podemos escrever no seu dispositivo.")
