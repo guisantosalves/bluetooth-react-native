@@ -1,4 +1,4 @@
-package com.bluetoothnativo.newarchitecture.modules;
+package com.forbov.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

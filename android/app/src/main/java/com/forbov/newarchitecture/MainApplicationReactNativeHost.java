@@ -1,4 +1,4 @@
-package com.bluetoothnativo.newarchitecture;
+package com.forbov.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.bluetoothnativo.BuildConfig;
-import com.bluetoothnativo.newarchitecture.components.MainComponentsRegistry;
-import com.bluetoothnativo.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.forbov.BuildConfig;
+import com.forbov.newarchitecture.components.MainComponentsRegistry;
+import com.forbov.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

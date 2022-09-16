@@ -1,4 +1,4 @@
-package com.bluetoothnativo;
+package com.forbov;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

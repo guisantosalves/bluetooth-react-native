@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 // icons
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -77,6 +78,53 @@ const Home = ({navigation}) => {
     gettingItem()
   }, [])
 
+  const verifyRace = (id) => {
+    switch(id){
+      case 2:
+        return "NELORE"
+      case 5:
+        return "SENEPOL"
+      case 20:
+        return "REDIANO"
+      case 19:
+        return "MURRAY GREY"
+      case 18:
+        return "CRUZADA"
+      case 7:
+        return "CARACU"
+      case 17:
+        return "ABERDEEN"
+    }
+  }
+
+  const verifySex = (id) => {
+    if(id === 1){
+      return "Macho"
+    }else{
+      return "Femea"
+    }
+  }
+
+  const verifyAge = (id) => {
+    switch(id){
+      case 1:
+        return "0 a 8 meses"
+      case 2:
+        return "9 a 12 meses"
+      case 3:
+        return "13 a 24 meses"
+      case 4:
+        return "24 a 36 meses"
+      case 5:
+        return ">36 meses"
+    }
+  }
+
+  const DisplayMoney = (value) => {
+    const newVa = value.toString().replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    return newVa
+  }
+
   return (
       <SafeAreaView style={styles.container}>
           <>
@@ -98,29 +146,26 @@ const Home = ({navigation}) => {
 
               {/* the latest insertions */}
               <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', padding: 10}}>
-              {dataToDisplayFromAS.map((item, index)=>(
-              <View key={index} style={{borderWidth: 1, borderColor: 'blue', height: 150, borderRadius: 5, backgroundColor: '#E9FFF9', marginTop: 5, marginBottom: 15}}>
-              <View style={{width: '100%', height: 45, borderTopRightRadius: 3, borderTopLeftRadius: 3, backgroundColor: '#3F51B5',
-                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={{color: '#E9FFF9', fontSize: 16, marginLeft: 5}}>Brinco: {item.brinco}</Text>
-                <Text style={{color: '#E9FFF9', fontSize: 13, marginBottom: 20, marginRight: 5}}>{item.date}</Text>
-              </View>
-              <View style={{flexDirection: 'row', height: '100%'}}>
-                <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-start', padding: 5}}>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Peso(KG): {item.peso}</Text>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Raça: {item.raca}</Text>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Sexo: {item.sexo}</Text>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Idade: {item.idade}</Text>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {item.valorMedio}</Text>
+                {dataToDisplayFromAS.map((item, index)=>(
+                <View key={index} style={{borderWidth: 2, borderColor: 'blue', height: 158, borderRadius: 5, backgroundColor: '#E9FFF9', marginTop: 5, marginBottom: 15}}>
+                <View style={{width: '100%', height: 45, borderTopRightRadius: 3, borderTopLeftRadius: 3, backgroundColor: '#3F51B5',
+                  flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <Text style={{color: '#E9FFF9', fontSize: 16, marginLeft: 5}}>Brinco: {item.brinco}</Text>
+                  <Text style={{color: '#E9FFF9', fontSize: 13, marginBottom: 20, marginRight: 5}}>{item.date}</Text>
                 </View>
-                <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-end', padding: 5}}>
-                  <Text style={{fontWeight: '700', letterSpacing: 1}}>Fazenda: {item.fazenda}</Text>
-                  <TouchableOpacity onPress={()=>console.log(item.brinco)}>
-                    <Icon name="remove" size={38} color={'#ea7070'}/>
-                  </TouchableOpacity>
+                <View style={{flexDirection: 'row', height: '100%'}}>
+                  <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-start', padding: 5}}>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>Peso(KG): {item.peso}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>Raça: {verifyRace(item.raca)}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>Sexo: {verifySex(item.sexo)}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>Idade: {verifyAge(item.idade)}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {DisplayMoney(item.valorMedio)}</Text>
+                  </View>
+                  <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-end', padding: 5}}>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>Brinco EL: {item.brincoEletronico}</Text>
+                  </View>
                 </View>
-              </View>
-              </View>
+                </View>
               ))}
               </ScrollView>
 
