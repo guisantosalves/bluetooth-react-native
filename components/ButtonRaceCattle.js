@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
-const ButtonRaceCattle = ({gettingValue}) => {
+const ButtonRaceCattle = ({ gettingValue }) => {
 
     const [isPressedOne, setisPressedOne] = React.useState(false);
     const [isPressedTwo, setisPressedTwo] = React.useState(false);
@@ -26,10 +26,10 @@ const ButtonRaceCattle = ({gettingValue}) => {
         gettingAllStates.forEach((item, index) => {
             result[item] = (result[item] || 0) + 1;
         })
-        
-        if(result?.true > 1){
+
+        if (result?.true > 1) {
             return true
-        }else{
+        } else {
             return false
         }
     }
@@ -67,8 +67,8 @@ const ButtonRaceCattle = ({gettingValue}) => {
         }
     ]
 
-    React.useEffect(()=>{
-        if(verifyPressedButtons()){
+    React.useEffect(() => {
+        if (verifyPressedButtons()) {
             alert("Só pode escolher umas das opções")
             setisPressedOne(false)
             setisPressedTwo(false)
@@ -79,34 +79,38 @@ const ButtonRaceCattle = ({gettingValue}) => {
             setisPressedSeven(false)
         }
 
+        if (!isPressedOne && !isPressedTwo && !isPressedThree && !isPressedFour && !isPressedFive && !isPressedSix && !isPressedSeven) {
+            gettingValue()
+        }
+
     }, [isPressedOne, isPressedTwo, isPressedThree, isPressedFour, isPressedFive, isPressedSix, isPressedSeven])
-    return(
+    return (
         <>
-            <TouchableOpacity style={isPressedOne ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedOne(!isPressedOne);gettingValue(dataToSend[0].id)}}>
+            <TouchableOpacity style={isPressedOne ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedOne(!isPressedOne); gettingValue(dataToSend[0].id) }}>
                 <Text style={isPressedOne ? style.textPressed : style.textColor}>{dataToSend[0].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedTwo ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedTwo(!isPressedTwo);gettingValue(dataToSend[1].id)}}>
+            <TouchableOpacity style={isPressedTwo ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedTwo(!isPressedTwo); gettingValue(dataToSend[1].id) }}>
                 <Text style={isPressedTwo ? style.textPressed : style.textColor}>{dataToSend[1].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedThree ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedThree(!isPressedThree);gettingValue(dataToSend[2].id)}}>
+            <TouchableOpacity style={isPressedThree ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedThree(!isPressedThree); gettingValue(dataToSend[2].id) }}>
                 <Text style={isPressedThree ? style.textPressed : style.textColor}>{dataToSend[2].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedFour ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedFour(!isPressedFour);gettingValue(dataToSend[3].id)}}>
+            <TouchableOpacity style={isPressedFour ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedFour(!isPressedFour); gettingValue(dataToSend[3].id) }}>
                 <Text style={isPressedFour ? style.textPressed : style.textColor}>{dataToSend[3].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedFive ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedFive(!isPressedFive);gettingValue(dataToSend[4].id)}}>
+            <TouchableOpacity style={isPressedFive ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedFive(!isPressedFive); gettingValue(dataToSend[4].id) }}>
                 <Text style={isPressedFive ? style.textPressed : style.textColor}>{dataToSend[4].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedSix ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedSix(!isPressedSix);gettingValue(dataToSend[5].id)}}>
+            <TouchableOpacity style={isPressedSix ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedSix(!isPressedSix); gettingValue(dataToSend[5].id) }}>
                 <Text style={isPressedFive ? style.textPressed : style.textColor}>{dataToSend[5].value}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={isPressedSeven ? style.containerButtonPressed : style.containerButton} onPress={()=>{setisPressedSeven(!isPressedSeven);gettingValue(dataToSend[6].id)}}>
+            <TouchableOpacity style={isPressedSeven ? style.containerButtonPressed : style.containerButton} onPress={() => { setisPressedSeven(!isPressedSeven); gettingValue(dataToSend[6].id) }}>
                 <Text style={isPressedFive ? style.textPressed : style.textColor}>{dataToSend[6].value}</Text>
             </TouchableOpacity>
 
