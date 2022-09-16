@@ -131,7 +131,7 @@ const Home = ({navigation}) => {
             <View style={styles.mainHeader}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 
-                  <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
+                  <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>FORBOV</Text>
                   <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
                       <Icon name="file-text" size={30} color={'#E9FFF9'}/>
