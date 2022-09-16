@@ -30,7 +30,7 @@ const RequestPermissionUser = ({navigation}) => {
         requestBLUETOOTH_ADMINPermission()
         BLUETOOTH_SCANrequestPermission()
         BLUETOOTH_ADVERTISErequestPermission()
-
+        
         settingInRequestPermissionDB(true)
         
       }catch(e){

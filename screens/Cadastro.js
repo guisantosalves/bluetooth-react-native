@@ -142,6 +142,25 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
   }
 }
 
+const WriteAndReadDataRequestPermission = async () => {
+  try{
+    const multipleRequest = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    ]);
+  }catch(err){
+    alert(err)
+  }
+  const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+  const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+
+  // if writeGranted doesn't exist
+  if(!writeGranted || writeGranted == false|| !readGranted){
+    alert("não podemos escrever no seu dispositivo.")
+    return;
+  }
+}
+
   // pega características de algo ja pareado
   const getData = (theBalance) => {
 
@@ -198,7 +217,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
     requestLocationPermission();
     requestBLUETOOTH_ADMINPermission()
     BLUETOOTH_ADVERTISErequestPermission()
-
+    WriteAndReadDataRequestPermission()
 
     console.log("ok")
   }
@@ -419,7 +438,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
 
         <ScrollView showsVerticalScrollIndicator={false}>
 
-          {devices.length > 0 || deviceOnStore ? (
+          {devices.length > 0 ? (
           <View>
             <View style={styles.containerButtonsForAction}>
               <TouchableOpacity onPress={getTheCurrentWeight} style={styles.buttonsForActions}>
