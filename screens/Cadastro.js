@@ -224,7 +224,9 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
           dispatch(requestDevice({
             requestDevice: devices[0]
           }))
+          
           setDevices(oldArray=>[...oldArray, listOfDevices])
+          console.log(devices)
           manager.stopDeviceScan()
         }
 
@@ -348,7 +350,6 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
 
               if(err){
                 console.log("error", err)
-                getTheCurrentWeight()
               }
 
             }
@@ -362,7 +363,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
       .catch((err)=>{
 
         alert(err)
-
+        getTheCurrentWeight()
       })
       .finally(()=>{})
 
