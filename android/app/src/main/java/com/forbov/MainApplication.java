@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
 import org.pgsqlite.SQLitePluginPackage;
+import com.rnfs.RNFSPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,6 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
           //vector icons
           // packages.add(new VectorIconsPackage());
           // packages.add(new SQLitePluginPackage());
+          // packages.add(new RNFSPackage());
 
           return packages;
         }

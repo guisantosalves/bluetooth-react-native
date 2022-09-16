@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as RNFS from 'react-native-fs';
 
 // icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -125,19 +125,51 @@ const Home = ({navigation}) => {
     return newVa
   }
 
+  const saveCSV = () => {
+    // getting the path from device
+    const path = RNFS.DownloadDirectoryPath + `/pesagens.csv`;
+
+    if(dataToDisplayFromAS.length > 0){
+      console.log(dataToDisplayFromAS[1])
+      // mounting the csv file
+      const headerString = `Brinco,Brinco Eletronico,Peso,Idade,Sexo,Raca,Valor\n`;
+
+      // tem que ser sem o {} pois está retornando e não executando de fato
+      const rowString = dataToDisplayFromAS.map((item, index)=>`${item.brinco},${item.brincoEletronico},${item.peso},${item.idade},${item.sexo},${item.raca},${item.valorMedio}\n`,
+      ).join('')
+
+      // console.log(rowString)
+
+      const gettingAll = `${headerString}${rowString}`;
+      console.log(gettingAll)
+
+      //writing
+      RNFS.writeFile(path, gettingAll, 'utf8')
+      .then(success => {
+        alert("Salvo com sucesso")
+      })
+      .catch(err=>{
+        alert("falha no processo de salvamento: "+err);
+      })
+
+    }else{
+
+      alert("os dados do export estão errados")
+      return;
+
+    }
+
+  }
+
   return (
       <SafeAreaView style={styles.container}>
           <>
             <View style={styles.mainHeader}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-
                   <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>FORBOV</Text>
                   <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
+                    <TouchableOpacity onPress={saveCSV} style={{marginRight: 10}}>
                       <Icon name="file-text" size={30} color={'#E9FFF9'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.push('User')}>
-                      <Icon name="user" size={30} color={'#E9FFF9'}/>
                     </TouchableOpacity>
                   </View>
               </View>
