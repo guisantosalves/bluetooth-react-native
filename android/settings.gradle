@@ -5,6 +5,8 @@ includeBuild('../node_modules/react-native-gradle-plugin')
 rootProject.name = 'MyApp'
 
 if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true") {
+    include ':react-native-fs'
+    project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
     include(":ReactAndroid")
     project(":ReactAndroid").projectDir = file('../node_modules/react-native/ReactAndroid')
     include(":ReactAndroid:hermes-engine")

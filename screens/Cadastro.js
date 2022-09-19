@@ -1,40 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Buffer } from 'buffer';
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  PermissionsAndroid,
-  Alert,
-  TouchableOpacity,
-  ScrollView,
-  TouchableHighlight,
-  KeyboardAvoidingView
-} from 'react-native';
-import { useDispatch } from 'react-redux';
-import { requestDevice } from '../features/appSlice';
-import { useSelector } from 'react-redux';
+import { Alert, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import base64 from 'react-native-base64';
+import { BleManager, NativeDevice, Service } from 'react-native-ble-plx';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
+
+import Header from '../components/Header';
+import InputOptions from '../components/InputOptions';
 
 // icons
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 // components
-import ButtonsOptions from '../components/ButtonsOptions';
-import InputOptions from "../components/InputOptions";
-import Header from "../components/Header";
-import RadioButton from '../components/RadioButton';
-import ButtonAgeCattle from '../components/ButtonAgeCattle';
-
-import { BleManager } from 'react-native-ble-plx';
-import { Service } from 'react-native-ble-plx';
-import { NativeDevice } from 'react-native-ble-plx';
-import base64 from 'react-native-base64'
-import { Buffer, INSPECT_MAX_BYTES } from 'buffer';
-import { deepStrictEqual } from 'assert';
-import { FloatingAction } from 'react-native-floating-action';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const Cadastro = ({navigation}) => {
 
   const manager = new BleManager();
@@ -142,6 +119,25 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
   }
 }
 
+const WriteAndReadDataRequestPermission = async () => {
+  try{
+    const multipleRequest = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    ]);
+  }catch(err){
+    alert(err)
+  }
+  const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+  const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+
+  // if writeGranted doesn't exist
+  if(!writeGranted || writeGranted == false|| !readGranted){
+    alert("não podemos escrever no seu dispositivo.")
+    return;
+  }
+}
+
   // pega características de algo ja pareado
   const getData = (theBalance) => {
 
@@ -198,7 +194,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
     requestLocationPermission();
     requestBLUETOOTH_ADMINPermission()
     BLUETOOTH_ADVERTISErequestPermission()
-
+    WriteAndReadDataRequestPermission()
 
     console.log("ok")
   }
@@ -221,10 +217,9 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
         }
 
         if(listOfDevices.id == "C7:C6:8B:C9:9F:2D"){
-          dispatch(requestDevice({
-            requestDevice: devices[0]
-          }))
+                    
           setDevices(oldArray=>[...oldArray, listOfDevices])
+          console.log(devices)
           manager.stopDeviceScan()
         }
 
@@ -329,10 +324,12 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
 
             try{
 
-              let weight_transformed = base64.decode(cha.value)
+              let weightTransformed = base64.decode(cha.value)
+                let weightString = weightTransformed.replace('[', '');
+                let peso = weightString.replace(']', '');
 
-              console.log(weight_transformed)
-              Alert.alert("Peso", `Importar o peso: ${weight_transformed}`, [
+              console.log(peso)
+              Alert.alert("Peso", `Importar o peso: ${peso}`, [
                 {
                   text: "Errado",
                   onPress: () => console.log("apertou cancelar"),
@@ -340,7 +337,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
                 },
                 {
                   text: "Correto",
-                  onPress: () => setWeightt(weight_transformed),
+                  onPress: () => setWeightt(peso),
                 }
               ])
 
@@ -348,7 +345,6 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
 
               if(err){
                 console.log("error", err)
-                getTheCurrentWeight()
               }
 
             }
@@ -362,7 +358,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
       .catch((err)=>{
 
         alert(err)
-
+        getTheCurrentWeight()
       })
       .finally(()=>{})
 
@@ -419,7 +415,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
 
         <ScrollView showsVerticalScrollIndicator={false}>
 
-          {devices.length > 0 || deviceOnStore ? (
+          {devices.length > 0 ? (
           <View>
             <View style={styles.containerButtonsForAction}>
               <TouchableOpacity onPress={getTheCurrentWeight} style={styles.buttonsForActions}>
@@ -431,7 +427,7 @@ const BLUETOOTH_ADVERTISErequestPermission = async () => {
             {/* Form */}
             <View>
               <Header theader={"Cadastro"}/>
-              <InputOptions weight={Weightt}/>
+              <InputOptions peso={Weightt}/>
             </View>
           </View>
           ) : (

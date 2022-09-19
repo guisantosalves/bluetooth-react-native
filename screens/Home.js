@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as RNFS from 'react-native-fs';
 
 // icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -121,8 +121,44 @@ const Home = ({navigation}) => {
   }
 
   const DisplayMoney = (value) => {
-    const newVa = value.toString().replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    const newVa = value?.toString().replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     return newVa
+  }
+
+  const saveCSV = () => {
+    // getting the path from device
+    const path = RNFS.DownloadDirectoryPath + `/pesagens.csv`;
+
+    if(dataToDisplayFromAS.length > 0){
+      console.log(dataToDisplayFromAS[1])
+      // mounting the csv file
+      const headerString = `Brinco,Brinco Eletronico,Peso,Idade,Sexo,Raca,Valor\n`;
+
+      // tem que ser sem o {} pois está retornando e não executando de fato
+      const rowString = dataToDisplayFromAS.map((item, index)=>`${item.brinco},${item.brincoEletronico},${item.peso},${item.idade},${item.sexo},${item.raca},${item.valorMedio}\n`,
+      ).join('')
+
+      // console.log(rowString)
+
+      const gettingAll = `${headerString}${rowString}`;
+      console.log(gettingAll)
+
+      //writing
+      RNFS.writeFile(path, gettingAll, 'utf8')
+      .then(success => {
+        alert("Salvo com sucesso")
+      })
+      .catch(err=>{
+        alert("falha no processo de salvamento: "+err);
+      })
+
+    }else{
+
+      alert("os dados do export estão errados")
+      return;
+
+    }
+
   }
 
   return (
@@ -130,14 +166,10 @@ const Home = ({navigation}) => {
           <>
             <View style={styles.mainHeader}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-
-                  <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SYMMETRY</Text>
+                  <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>FORBOV</Text>
                   <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 30}}>
+                    <TouchableOpacity onPress={saveCSV} style={{marginRight: 10}}>
                       <Icon name="file-text" size={30} color={'#E9FFF9'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.push('User')}>
-                      <Icon name="user" size={30} color={'#E9FFF9'}/>
                     </TouchableOpacity>
                   </View>
               </View>
@@ -159,7 +191,7 @@ const Home = ({navigation}) => {
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Raça: {verifyRace(item.raca)}</Text>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Sexo: {verifySex(item.sexo)}</Text>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Idade: {verifyAge(item.idade)}</Text>
-                    <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {DisplayMoney(item.valorMedio)}</Text>
+                    <Text style={{fontWeight: '700', letterSpacing: 1}}>valor médio: {DisplayMoney(item?.valorMedio)}</Text>
                   </View>
                   <View style={{width: '50%', justifyContent: 'space-between', height: 108, alignItems: 'flex-end', padding: 5}}>
                     <Text style={{fontWeight: '700', letterSpacing: 1}}>Brinco EL: {item.brincoEletronico}</Text>

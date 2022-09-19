@@ -30,7 +30,7 @@ const RequestPermissionUser = ({navigation}) => {
         requestBLUETOOTH_ADMINPermission()
         BLUETOOTH_SCANrequestPermission()
         BLUETOOTH_ADVERTISErequestPermission()
-
+        
         settingInRequestPermissionDB(true)
         
       }catch(e){
@@ -159,7 +159,7 @@ const RequestPermissionUser = ({navigation}) => {
 
             <View style={style.containerHead}>
                 <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                    <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3, padding: 2}}>SYMMETRY</Text>
+                    <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3, padding: 2}}>FORBOV</Text>
                 </View>
             </View>
 
