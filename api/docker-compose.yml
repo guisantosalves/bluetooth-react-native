@@ -1,0 +1,20 @@
+  
+version: '1.0'
+
+services:
+  alpha.documentoscloud:
+    image: ${DOCKER_REGISTRY-}forbov
+    build:
+      context: .
+    environment:
+      TZ: America/Manaus
+      ASPNETCORE_ENVIRONMENT: Production
+    ports:
+      - 6542:80
+      - 6543:443
+      - 443:443
+    networks:
+      - alpha-network
+networks:
+  alpha-network:
+    driver: bridge
