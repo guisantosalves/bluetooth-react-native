@@ -115,13 +115,6 @@ const InputOptions = ({ peso }) => {
         >
             {({ handleChange, handleSubmit, values, errors, touched, setFieldValue, resetForm }) => (
                 <KeyboardAvoidingView>
-                    {/* <View style={style.container}>
-                            <Text style={style.textColor}>Fazenda</Text>
-                            <View style={style.inputStyle}>
-                            <TextInput value={farm} placeholder={"Ex: Fazendinha"} keyboardType={"none"} editable={false}/>
-                            </View>
-                        </View> */}
-                    {/* weight */}
                     <View style={style.container}>
                         <View style={style.viewRow}>
                             <Text style={style.textColor}>Peso</Text>
