@@ -116,6 +116,7 @@ namespace Alpha.Pesagem.Api.Data
 
       modelBuilder.ApplyConfiguration(new EmpresaModelConfiguration());
       modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
+      modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
       modelBuilder.ApplyConfiguration(new LogModelConfiguration());
       modelBuilder.ApplyConfiguration(new UsuarioModelConfiguration());
 
@@ -124,6 +125,7 @@ namespace Alpha.Pesagem.Api.Data
       modelBuilder.Entity<Fornecedor>().HasIndex(em => em.EmpresaId);
       modelBuilder.Entity<Log>().HasIndex(em => em.EmpresaId);
       modelBuilder.Entity<Usuario>().HasIndex(em => em.EmpresaId);
+      modelBuilder.Entity<Peso>().HasIndex(em => em.EmpresaId);
 
       // Filtros por tenant. São aplicados globalmente no context.
       modelBuilder.Entity<Fornecedor>().HasQueryFilter(e => e.EmpresaId == this.Tenant.Id);
