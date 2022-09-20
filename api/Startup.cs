@@ -1,13 +1,19 @@
+using Alpha.Pesagem.Api.Data;
+using Alpha.Pesagem.Api.Models;
+using Alpha.Pesagem.Api.Resolvers;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
+using System.Text;
 
 namespace Api.Pesagem
 {
@@ -23,33 +29,105 @@ namespace Api.Pesagem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+           {
+                   builder.AllowAnyOrigin()
+               .SetIsOriginAllowedToAllowWildcardSubdomains()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+               });
+            });
+
+            services.AddDbContext<AlphaDbContext>(options =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("Default"));
+            });
+
+            services.AddMultitenancy<Empresa, CachingTenantResolver>();
+            services.AddDataServices();
+            services.AddHttpContextAccessor();
+            ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("pt-BR");
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromSeconds(5),
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Token:Issuer"],
+                        ValidAudience = Configuration["Token:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SigningKey"]))
+                    };
+                });
+
+            services.AddAuthorization();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.UseCamelCasing(true);
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            // Adicionando o gerador Swagger
+            services.AddSwaggerGen((options) =>
+            {
+                options.SwaggerDoc("v1",
+                new OpenApiInfo
+                    {
+                        Title = "API - App Pesagem",
+                        Version = "v1",
+                        Description = "API - App Pesagem",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Equipe DEV - Alpha Software",
+                            Email = "desenvolvimento@alphasoftware.com.br",
+                            Url = new Uri("https://www.alphasoftware.com.br/contato")
+                        }
+                    });
+            });
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
+
+            app.UseCors();
+
+            //Adicionando o middleware para servir o Swagger gerado como um terminal JSON
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+                c.RoutePrefix = "docs";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API - App Pesagem");
+            });
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseStatusCodePages();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMultitenancy<Empresa>();
+
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
