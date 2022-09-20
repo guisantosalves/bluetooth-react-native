@@ -10,7 +10,6 @@ namespace Alpha.Pesagem.Api.Validation
     {
       RuleFor(q => q.IdAlphaExpress).NotNull();
       RuleFor(q => q.Mensagem).MaximumLength(5000).NotNull();
-      RuleFor(q => q.SubEmpresaId).NotNull();
     }
   }
   public class LogSaveEmLoteValidator : AbstractValidator<IEnumerable<Log>>

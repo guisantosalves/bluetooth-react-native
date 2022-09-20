@@ -13,9 +13,6 @@ namespace Alpha.Pesagem.Api.ViewModels
 
     [Required]
     public Guid EmpresaId { get; set; }
-
-    [Required]
-    public Guid SubEmpresaId { get; set; }
   }
   public class UsuarioSelectViewModel
   {
@@ -32,10 +29,5 @@ namespace Alpha.Pesagem.Api.ViewModels
 
     [Required]
     public Guid RefreshToken { get; set; }
-  }
-  public class TokenRefreshSubEmpresaViewModel : TokenRefreshViewModel
-  {
-    [Required]
-    public Guid SubEmpresaId { get; set; }
   }
 }

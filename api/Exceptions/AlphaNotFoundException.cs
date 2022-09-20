@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Alpha.Pesagem.Api.Exceptions
+namespace Alpha.Vendas.Api.Exceptions
 {
   public class AlphaNotFoundException : AlphaException
   {

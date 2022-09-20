@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Alpha.Pesagem.Api.Exceptions
+namespace Alpha.Vendas.Api.Exceptions
 {
   ///<summary>
   /// Representa uma exceção de requisição inválida, quando por responsabilidade do usuário

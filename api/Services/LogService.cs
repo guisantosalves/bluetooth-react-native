@@ -16,10 +16,9 @@ namespace Alpha.Pesagem.Api.Services
 
     }
 
-    public async Task<IEnumerable<Log>> Filtrar(Guid subEmpresaId, Guid usuarioId)
+    public async Task<IEnumerable<Log>> Filtrar(Guid usuarioId)
     {
       var registros = await this.Query()
-        .Where(q => q.SubEmpresaId == subEmpresaId)
         .Where(q => q.UsuarioCriacaoId == usuarioId)
         .ToListAsync();
 

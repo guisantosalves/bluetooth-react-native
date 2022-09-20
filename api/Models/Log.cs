@@ -8,10 +8,6 @@ namespace Alpha.Pesagem.Api.Models
 
     public string Mensagem { get; set; }
 
-    public Guid SubEmpresaId { get; set; }
-
-    public virtual SubEmpresa SubEmpresa { get; set; }
-
     public DateTime DataCriacao { get; set; }
 
     public DateTime? DataAlteracao { get; set; }
