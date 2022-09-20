@@ -10,6 +10,7 @@ namespace Alpha.Pesagem.Api.Resolvers
         {
             services.AddScoped<IReadOnlyDataService<Usuario>, UsuarioService>();
             services.AddScoped<IDataService<Empresa>, EmpresaService>();
+            services.AddScoped<IDataService<Peso>, PesoService>();
             services.AddScoped<ITenantDataService<Fornecedor>, FornecedorService>();
             services.AddScoped<ITenantDataService<Log>, LogService>();
         }
