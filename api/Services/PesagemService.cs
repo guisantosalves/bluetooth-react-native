@@ -15,7 +15,7 @@ namespace Alpha.Pesagem.Api.Services
     public class PesoService : TenantLogDataService<Peso>
     {
         private IHttpContextAccessor accessor;
-        public PesoService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, empresa, httpContextAccessor)
+        public PesoService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
         {
         }
 

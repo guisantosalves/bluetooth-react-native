@@ -3,16 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Alpha.Pesagem.Api.ViewModels
 {
-  public class UsuarioLoginViewModel
+  public class LoginViewModel
   {
     [Required]
     public Guid Id { get; set; }
 
     [Required]
-    public string Senha { get; set; }
-
-    [Required]
-    public Guid EmpresaId { get; set; }
+    public Guid FazendaId { get; set; }
   }
   public class UsuarioSelectViewModel
   {

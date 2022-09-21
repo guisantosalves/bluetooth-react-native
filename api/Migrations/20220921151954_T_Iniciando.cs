@@ -3,29 +3,58 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Api.Pesagem.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class T_Iniciando : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Empresas",
+                name: "Fazendas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    Cnpj = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: true),
-                    ImagemBase64 = table.Column<string>(type: "text", nullable: true),
-                    Inativo = table.Column<bool>(type: "boolean", nullable: false),
+                    Inativo = table.Column<short>(type: "smallint", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Empresas", x => x.Id);
+                    table.PrimaryKey("PK_Fazendas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
+                name: "Peso",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FazendaId = table.Column<int>(type: "integer", nullable: false),
+                    Brinco = table.Column<string>(type: "text", nullable: true),
+                    BrincoEletronico = table.Column<string>(type: "text", nullable: true),
+                    PesoTotal = table.Column<string>(type: "text", nullable: true),
+                    Idade = table.Column<string>(type: "text", nullable: true),
+                    Raca = table.Column<string>(type: "text", nullable: true),
+                    ValorMedio = table.Column<string>(type: "text", nullable: true),
+                    Sexo = table.Column<string>(type: "text", nullable: true),
+                    Observacao = table.Column<string>(type: "text", nullable: true),
+                    Sincronizado = table.Column<short>(type: "smallint", nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
+                    FazendaId1 = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Peso", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Peso_Fazendas_FazendaId1",
+                        column: x => x.FazendaId1,
+                        principalTable: "Fazendas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Usuario",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -36,15 +65,15 @@ namespace Api.Pesagem.Migrations
                     Inativo = table.Column<short>(type: "smallint", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    EmpresaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_Usuario", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Usuarios_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
+                        name: "FK_Usuario_Fazendas_FazendaId",
+                        column: x => x.FazendaId,
+                        principalTable: "Fazendas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -79,27 +108,27 @@ namespace Api.Pesagem.Migrations
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Aviso = table.Column<string>(type: "text", nullable: true),
-                    EmpresaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Fornecedor", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Fornecedor_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
+                        name: "FK_Fornecedor_Fazendas_FazendaId",
+                        column: x => x.FazendaId,
+                        principalTable: "Fazendas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Fornecedor_Usuarios_UsuarioAlteracaoId",
+                        name: "FK_Fornecedor_Usuario_UsuarioAlteracaoId",
                         column: x => x.UsuarioAlteracaoId,
-                        principalTable: "Usuarios",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Fornecedor_Usuarios_UsuarioCriacaoId",
+                        name: "FK_Fornecedor_Usuario_UsuarioCriacaoId",
                         column: x => x.UsuarioCriacaoId,
-                        principalTable: "Usuarios",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -115,35 +144,35 @@ namespace Api.Pesagem.Migrations
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     UsuarioCriacaoId = table.Column<Guid>(type: "uuid", nullable: true),
                     UsuarioAlteracaoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    EmpresaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Log", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Log_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
+                        name: "FK_Log_Fazendas_FazendaId",
+                        column: x => x.FazendaId,
+                        principalTable: "Fazendas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Log_Usuarios_UsuarioAlteracaoId",
+                        name: "FK_Log_Usuario_UsuarioAlteracaoId",
                         column: x => x.UsuarioAlteracaoId,
-                        principalTable: "Usuarios",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Log_Usuarios_UsuarioCriacaoId",
+                        name: "FK_Log_Usuario_UsuarioCriacaoId",
                         column: x => x.UsuarioCriacaoId,
-                        principalTable: "Usuarios",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fornecedor_EmpresaId",
+                name: "IX_Fornecedor_FazendaId",
                 table: "Fornecedor",
-                column: "EmpresaId");
+                column: "FazendaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Fornecedor_UsuarioAlteracaoId",
@@ -156,9 +185,9 @@ namespace Api.Pesagem.Migrations
                 column: "UsuarioCriacaoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Log_EmpresaId",
+                name: "IX_Log_FazendaId",
                 table: "Log",
-                column: "EmpresaId");
+                column: "FazendaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Log_UsuarioAlteracaoId",
@@ -171,9 +200,19 @@ namespace Api.Pesagem.Migrations
                 column: "UsuarioCriacaoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Usuarios_EmpresaId",
-                table: "Usuarios",
-                column: "EmpresaId");
+                name: "IX_Peso_FazendaId",
+                table: "Peso",
+                column: "FazendaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Peso_FazendaId1",
+                table: "Peso",
+                column: "FazendaId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuario_FazendaId",
+                table: "Usuario",
+                column: "FazendaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -185,10 +224,13 @@ namespace Api.Pesagem.Migrations
                 name: "Log");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Peso");
 
             migrationBuilder.DropTable(
-                name: "Empresas");
+                name: "Usuario");
+
+            migrationBuilder.DropTable(
+                name: "Fazendas");
         }
     }
 }

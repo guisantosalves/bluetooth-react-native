@@ -25,12 +25,12 @@ namespace Alpha.Pesagem.Api.Services
 
   public interface ITenantReadOnlyDataService<T> : IReadOnlyDataService<T> where T : EntidadeTenant
   {
-    Empresa Empresa { get; set; }
+    Fazenda Fazenda { get; set; }
   }
 
   public interface ITenantDataService<T> : IDataService<T> where T : EntidadeTenant
   {
-    Empresa Empresa { get; set; }
+    Fazenda Fazenda { get; set; }
     Task<T> SalvarAsync(T obj);
     Task SalvarEmLoteAlphaExpressAsync(IEnumerable<T> list);
     Task SalvarEmLoteAsync(IEnumerable<T> list);

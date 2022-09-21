@@ -11,7 +11,7 @@ namespace Alpha.Pesagem.Api.Services
 {
   public class LogService : TenantDataService<Log>
   {
-    public LogService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, empresa, httpContextAccessor)
+    public LogService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
     {
 
     }
