@@ -19,8 +19,8 @@ namespace Alpha.Pesagem.Api.Services
 
     public override async Task<IEnumerable<Fornecedor>> ObterRegistrosComparadosAsync(List<ModelComparacaoViewModel> lista, int? diasAnteriores)
     {
-      var usuarioId = Guid.Parse(this._context.HttpContext.User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.Sid).Value);
-      var usuario = await this._context.Set<Usuario>().FirstOrDefaultAsync(q => q.Id == usuarioId);
+      var fazendaId = Guid.Parse(this._context.HttpContext.User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.Sid).Value);
+      var fazenda = await this._context.Set<Fazenda>().FirstOrDefaultAsync(q => q.Id == fazendaId);
 
       // Compara os registros para descobrir quem foi adicionado/alterado
       var registrosExistentes = await this.Query()
@@ -52,7 +52,7 @@ namespace Alpha.Pesagem.Api.Services
       var result = await query.ToListAsync();
 
       result = result
-        .Where(q => (!string.IsNullOrWhiteSpace(q.Vendedores) ? Convert.ToString(q.Vendedores).Split(",").Contains(usuario.IdAlphaExpress.Value.ToString()) : true))
+        .Where(q => (!string.IsNullOrWhiteSpace(q.Vendedores) ? Convert.ToString(q.Vendedores).Split(",").Contains(fazenda.IdAlphaExpress.Value.ToString()) : true))
         .ToList();
 
       return result.Where(q => !registrosDesnecessarios.Any(d => q.Id == d.Id)).ToList();

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Alpha.Pesagem.Api.Models
 {
-  public class Fazenda : EntidadeBase, IDateLog
+  public class Fazenda : EntidadeBase, IAlphaExpressRef, IDateLog
   {
     [StringLength(60, ErrorMessage = "{0} deve ter no máximo {1} caracteres")]
     public string Nome { get; set; }

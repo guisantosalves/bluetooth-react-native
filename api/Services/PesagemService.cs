@@ -4,9 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Data;
+using Alpha.Pesagem.Api.Exceptions;
 using Alpha.Pesagem.Api.Models;
 using Alpha.Pesagem.Api.Resolvers;
-using Alpha.Vendas.Api.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +17,7 @@ namespace Alpha.Pesagem.Api.Services
         private IHttpContextAccessor accessor;
         public PesoService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
         {
+            this.accessor = httpContextAccessor;
         }
 
         public override IQueryable<Peso> Query()

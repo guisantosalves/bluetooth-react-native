@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using Alpha.Vendas.Api.Exceptions;
 using Alpha.Pesagem.Api.Services;
 using Alpha.Pesagem.Api.Validation;
 using Alpha.Pesagem.Api.Services.Auth;
 using Alpha.Pesagem.Api.ViewModels;
 using Alpha.Pesagem.Api.Models;
+using Alpha.Pesagem.Api.Exceptions;
 
 namespace Alpha.Pesagem.Api.Controllers
 {
@@ -17,8 +16,8 @@ namespace Alpha.Pesagem.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private IReadOnlyDataService<Usuario> _service;
-        public AuthController(IReadOnlyDataService<Usuario> service)
+        private IReadOnlyDataService<Fazenda> _service;
+        public AuthController(IReadOnlyDataService<Fazenda> service)
         {
             _service = service;
         }

@@ -24,6 +24,69 @@ namespace Api.Pesagem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Fornecedor",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
+                    NomeRazao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    Apelido = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
+                    TipoPessoa = table.Column<short>(type: "smallint", nullable: false),
+                    Cpf = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
+                    Rg = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Cep = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: true),
+                    Endereco = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    Bairro = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    Numero = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    Complemento = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
+                    Telefone = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
+                    Celular = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
+                    Contato = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
+                    Observacao = table.Column<string>(type: "character varying(350)", maxLength: 350, nullable: true),
+                    Inativo = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
+                    Bloqueado = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
+                    Vendedores = table.Column<string>(type: "text", nullable: true),
+                    CodigoIbgeCidade = table.Column<int>(type: "integer", nullable: true),
+                    Sincronizado = table.Column<short>(type: "smallint", nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Aviso = table.Column<string>(type: "text", nullable: true),
+                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fornecedor", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Fornecedor_Fazendas_FazendaId",
+                        column: x => x.FazendaId,
+                        principalTable: "Fazendas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Log",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
+                    Mensagem = table.Column<string>(type: "text", nullable: true),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Log", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Log_Fazendas_FazendaId",
+                        column: x => x.FazendaId,
+                        principalTable: "Fazendas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Peso",
                 columns: table => new
                 {
@@ -53,121 +116,10 @@ namespace Api.Pesagem.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Usuario",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    Senha = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    Salto = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
-                    Inativo = table.Column<short>(type: "smallint", nullable: false),
-                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Usuario_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Fornecedor",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
-                    NomeRazao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    Apelido = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    TipoPessoa = table.Column<short>(type: "smallint", nullable: false),
-                    Cpf = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
-                    Rg = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Cep = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: true),
-                    Endereco = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    Bairro = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
-                    Numero = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    Complemento = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
-                    Telefone = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
-                    Celular = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
-                    Contato = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
-                    Observacao = table.Column<string>(type: "character varying(350)", maxLength: 350, nullable: true),
-                    Inativo = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
-                    Bloqueado = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: true),
-                    Vendedores = table.Column<string>(type: "text", nullable: true),
-                    CodigoIbgeCidade = table.Column<int>(type: "integer", nullable: true),
-                    Sincronizado = table.Column<short>(type: "smallint", nullable: false),
-                    UsuarioCriacaoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UsuarioAlteracaoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Aviso = table.Column<string>(type: "text", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Fornecedor", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Fornecedor_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Fornecedor_Usuario_UsuarioAlteracaoId",
-                        column: x => x.UsuarioAlteracaoId,
-                        principalTable: "Usuario",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Fornecedor_Usuario_UsuarioCriacaoId",
-                        column: x => x.UsuarioCriacaoId,
-                        principalTable: "Usuario",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Log",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
-                    Mensagem = table.Column<string>(type: "text", nullable: true),
-                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    UsuarioCriacaoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UsuarioAlteracaoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Log", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Log_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Log_Usuario_UsuarioAlteracaoId",
-                        column: x => x.UsuarioAlteracaoId,
-                        principalTable: "Usuario",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Log_Usuario_UsuarioCriacaoId",
-                        column: x => x.UsuarioCriacaoId,
-                        principalTable: "Usuario",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Fazendas_Id",
+                table: "Fazendas",
+                column: "Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Fornecedor_FazendaId",
@@ -175,38 +127,13 @@ namespace Api.Pesagem.Migrations
                 column: "FazendaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fornecedor_UsuarioAlteracaoId",
-                table: "Fornecedor",
-                column: "UsuarioAlteracaoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Fornecedor_UsuarioCriacaoId",
-                table: "Fornecedor",
-                column: "UsuarioCriacaoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Log_FazendaId",
                 table: "Log",
                 column: "FazendaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Log_UsuarioAlteracaoId",
-                table: "Log",
-                column: "UsuarioAlteracaoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_UsuarioCriacaoId",
-                table: "Log",
-                column: "UsuarioCriacaoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Peso_FazendaId",
                 table: "Peso",
-                column: "FazendaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Usuario_FazendaId",
-                table: "Usuario",
                 column: "FazendaId");
         }
 
@@ -220,9 +147,6 @@ namespace Api.Pesagem.Migrations
 
             migrationBuilder.DropTable(
                 name: "Peso");
-
-            migrationBuilder.DropTable(
-                name: "Usuario");
 
             migrationBuilder.DropTable(
                 name: "Fazendas");
