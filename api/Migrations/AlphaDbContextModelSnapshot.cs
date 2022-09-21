@@ -31,6 +31,9 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int?>("IdAlphaExpress")
+                        .HasColumnType("integer");
+
                     b.Property<short>("Inativo")
                         .HasColumnType("smallint");
 
@@ -212,10 +215,7 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("FazendaId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("FazendaId1")
+                    b.Property<Guid>("FazendaId")
                         .HasColumnType("uuid");
 
                     b.Property<int?>("IdAlphaExpress")
@@ -245,8 +245,6 @@ namespace Api.Pesagem.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FazendaId");
-
-                    b.HasIndex("FazendaId1");
 
                     b.ToTable("Peso");
                 });
@@ -345,7 +343,9 @@ namespace Api.Pesagem.Migrations
                 {
                     b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
                         .WithMany()
-                        .HasForeignKey("FazendaId1");
+                        .HasForeignKey("FazendaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Fazenda");
                 });
