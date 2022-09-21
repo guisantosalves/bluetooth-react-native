@@ -3,17 +3,15 @@ using System;
 using Alpha.Pesagem.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Api.Pesagem.Migrations
 {
     [DbContext(typeof(AlphaDbContext))]
-    [Migration("20220920205727_T_Incluindo_Pesagem")]
-    partial class T_Incluindo_Pesagem
+    partial class AlphaDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,15 +19,11 @@ namespace Api.Pesagem.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Empresa", b =>
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fazenda", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Cnpj")
-                        .HasMaxLength(14)
-                        .HasColumnType("character varying(14)");
 
                     b.Property<DateTime?>("DataAlteracao")
                         .HasColumnType("timestamp without time zone");
@@ -37,11 +31,8 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("ImagemBase64")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Inativo")
-                        .HasColumnType("boolean");
+                    b.Property<short>("Inativo")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(60)
@@ -49,7 +40,7 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empresas");
+                    b.ToTable("Fazendas");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fornecedor", b =>
@@ -103,13 +94,13 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("EmpresaId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Endereco")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
+
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("IdAlphaExpress")
                         .HasColumnType("integer");
@@ -156,7 +147,7 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmpresaId");
+                    b.HasIndex("FazendaId");
 
                     b.HasIndex("UsuarioAlteracaoId");
 
@@ -177,7 +168,7 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("EmpresaId")
+                    b.Property<Guid>("FazendaId")
                         .HasColumnType("uuid");
 
                     b.Property<int?>("IdAlphaExpress")
@@ -194,13 +185,70 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmpresaId");
+                    b.HasIndex("FazendaId");
 
                     b.HasIndex("UsuarioAlteracaoId");
 
                     b.HasIndex("UsuarioCriacaoId");
 
                     b.ToTable("Log");
+                });
+
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Brinco")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BrincoEletronico")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DataAlteracao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("FazendaId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("FazendaId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("IdAlphaExpress")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Idade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PesoTotal")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Raca")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sexo")
+                        .HasColumnType("text");
+
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ValorMedio")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FazendaId");
+
+                    b.HasIndex("FazendaId1");
+
+                    b.ToTable("Peso");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Usuario", b =>
@@ -215,7 +263,7 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("EmpresaId")
+                    b.Property<Guid>("FazendaId")
                         .HasColumnType("uuid");
 
                     b.Property<int?>("IdAlphaExpress")
@@ -238,16 +286,16 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmpresaId");
+                    b.HasIndex("FazendaId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuario");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fornecedor", b =>
                 {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Empresa", "Empresa")
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
                         .WithMany()
-                        .HasForeignKey("EmpresaId")
+                        .HasForeignKey("FazendaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -261,7 +309,7 @@ namespace Api.Pesagem.Migrations
                         .HasForeignKey("UsuarioCriacaoId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Empresa");
+                    b.Navigation("Fazenda");
 
                     b.Navigation("UsuarioAlteracao");
 
@@ -270,9 +318,9 @@ namespace Api.Pesagem.Migrations
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
                 {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Empresa", "Empresa")
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
                         .WithMany()
-                        .HasForeignKey("EmpresaId")
+                        .HasForeignKey("FazendaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -286,22 +334,31 @@ namespace Api.Pesagem.Migrations
                         .HasForeignKey("UsuarioCriacaoId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Empresa");
+                    b.Navigation("Fazenda");
 
                     b.Navigation("UsuarioAlteracao");
 
                     b.Navigation("UsuarioCriacao");
                 });
 
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
+                {
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
+                        .WithMany()
+                        .HasForeignKey("FazendaId1");
+
+                    b.Navigation("Fazenda");
+                });
+
             modelBuilder.Entity("Alpha.Pesagem.Api.Usuario", b =>
                 {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Empresa", "Empresa")
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
                         .WithMany()
-                        .HasForeignKey("EmpresaId")
+                        .HasForeignKey("FazendaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Empresa");
+                    b.Navigation("Fazenda");
                 });
 #pragma warning restore 612, 618
         }

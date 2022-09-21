@@ -12,7 +12,7 @@ namespace Alpha.Pesagem.Api.Services
 {
   public class FornecedorService : TenantLogDataService<Fornecedor>
   {
-    public FornecedorService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, empresa, httpContextAccessor)
+    public FornecedorService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
     {
 
     }

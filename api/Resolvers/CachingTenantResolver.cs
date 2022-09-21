@@ -14,7 +14,7 @@ using SaasKit.Multitenancy;
 
 namespace Alpha.Pesagem.Api.Resolvers
 {
-    public class CachingTenantResolver : MemoryCacheTenantResolver<Empresa>
+    public class CachingTenantResolver : MemoryCacheTenantResolver<Fazenda>
     {
         private readonly AlphaDbContext _context;
 
@@ -24,7 +24,7 @@ namespace Alpha.Pesagem.Api.Resolvers
         }
 
         // Resolver runs on cache misses
-        protected override async Task<TenantContext<Empresa>> ResolveAsync(HttpContext context)
+        protected override async Task<TenantContext<Fazenda>> ResolveAsync(HttpContext context)
         {
             //Se não está autenticado, não tem claim, portanto não tem tenant
             if (!context.User.Identity.IsAuthenticated)
@@ -38,11 +38,11 @@ namespace Alpha.Pesagem.Api.Resolvers
                 return null;
             }
 
-            var empresa = await _context.Set<Empresa>().IgnoreQueryFilters().AsNoTracking().FirstOrDefaultAsync(e => e.Id == Guid.Parse(claim.Value));
+            var fazenda = await _context.Set<Fazenda>().IgnoreQueryFilters().AsNoTracking().FirstOrDefaultAsync(e => e.Id == Guid.Parse(claim.Value));
 
-            if (empresa == null) return null;
+            if (fazenda == null) return null;
 
-            return new TenantContext<Empresa>(empresa);
+            return new TenantContext<Fazenda>(fazenda);
         }
 
         protected override MemoryCacheEntryOptions CreateCacheEntryOptions() => new MemoryCacheEntryOptions().SetSize(512000).SetAbsoluteExpiration(TimeSpan.FromHours(2));
@@ -53,7 +53,7 @@ namespace Alpha.Pesagem.Api.Resolvers
             return context.User.Claims.FirstOrDefault(c => c.Type.Equals(AlphaClaimTypes.TenantId)).Value;
         }
 
-        protected override IEnumerable<string> GetTenantIdentifiers(TenantContext<Empresa> context) => new string[] { context.Tenant.Id.ToString() };
+        protected override IEnumerable<string> GetTenantIdentifiers(TenantContext<Fazenda> context) => new string[] { context.Tenant.Id.ToString() };
     }
 
     public static class AlphaClaimTypes

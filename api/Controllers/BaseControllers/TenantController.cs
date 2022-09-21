@@ -18,11 +18,11 @@ namespace Alpha.Pesagem.Api.Controllers.BaseControllers
         public TenantController(ITenantDataService<T> service, IHttpContextAccessor context)
         {
             _service = service;
-            var tenantContext = context.HttpContext.GetTenantContext<Empresa>();
+            var tenantContext = context.HttpContext.GetTenantContext<Fazenda>();
 
             if (tenantContext != null)
             {
-                _service.Empresa = tenantContext.Tenant;
+                _service.Fazenda = tenantContext.Tenant;
             }
         }
 

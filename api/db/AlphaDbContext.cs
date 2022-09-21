@@ -11,17 +11,16 @@ namespace Alpha.Pesagem.Api.Data
 {
   public class AlphaDbContext : DbContext
   {
-    public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<Empresa> Empresas { get; set; }
+    public DbSet<Fazenda> Fazendas { get; set; }
     public HttpContext HttpContext { get; set; }
 
-    private Empresa _tenant;
+    private Fazenda _tenant;
 
-    public Empresa Tenant
+    public Fazenda Tenant
     {
       get
       {
-        this._tenant = this._tenant ?? new Empresa { Id = Guid.Empty };
+        this._tenant = this._tenant ?? new Fazenda { Id = Guid.Empty };
         return this._tenant;
       }
       set { _tenant = value; }
@@ -63,12 +62,12 @@ namespace Alpha.Pesagem.Api.Data
 
       foreach (var entityEntry in entriesTenant)
       {
-        if ((this.Tenant == null) || ((EntidadeTenant)entityEntry.Entity).EmpresaId != Guid.Empty)
+        if ((this.Tenant == null) || ((EntidadeTenant)entityEntry.Entity).FazendaId != Guid.Empty)
         {
           continue;
         }
 
-        ((EntidadeTenant)entityEntry.Entity).EmpresaId = this.Tenant.Id;
+        ((EntidadeTenant)entityEntry.Entity).FazendaId = this.Tenant.Id;
       }
 
       if (this.HttpContext != null)
@@ -114,7 +113,7 @@ namespace Alpha.Pesagem.Api.Data
     {
       base.OnModelCreating(modelBuilder);
 
-      modelBuilder.ApplyConfiguration(new EmpresaModelConfiguration());
+      modelBuilder.ApplyConfiguration(new FazendaModelConfiguration());
       modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
       modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
       modelBuilder.ApplyConfiguration(new LogModelConfiguration());
@@ -122,15 +121,15 @@ namespace Alpha.Pesagem.Api.Data
 
       // Criação de índices
       
-      modelBuilder.Entity<Fornecedor>().HasIndex(em => em.EmpresaId);
-      modelBuilder.Entity<Log>().HasIndex(em => em.EmpresaId);
-      modelBuilder.Entity<Usuario>().HasIndex(em => em.EmpresaId);
-      modelBuilder.Entity<Peso>().HasIndex(em => em.EmpresaId);
+      modelBuilder.Entity<Fornecedor>().HasIndex(em => em.FazendaId);
+      modelBuilder.Entity<Log>().HasIndex(em => em.FazendaId);
+      modelBuilder.Entity<Usuario>().HasIndex(em => em.FazendaId);
+      modelBuilder.Entity<Peso>().HasIndex(em => em.FazendaId);
 
       // Filtros por tenant. São aplicados globalmente no context.
-      modelBuilder.Entity<Fornecedor>().HasQueryFilter(e => e.EmpresaId == this.Tenant.Id);
-      modelBuilder.Entity<Log>().HasQueryFilter(e => e.EmpresaId == this.Tenant.Id);
-      modelBuilder.Entity<Usuario>().HasQueryFilter(e => e.EmpresaId == this.Tenant.Id);
+      modelBuilder.Entity<Fornecedor>().HasQueryFilter(e => e.FazendaId == this.Tenant.Id);
+      modelBuilder.Entity<Log>().HasQueryFilter(e => e.FazendaId == this.Tenant.Id);
+      modelBuilder.Entity<Usuario>().HasQueryFilter(e => e.FazendaId == this.Tenant.Id);
     }
   }
 }

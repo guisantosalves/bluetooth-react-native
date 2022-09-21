@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Alpha.Pesagem.Api.Data.ModelConfigurations
 {
-  public class EmpresaModelConfiguration : IEntityTypeConfiguration<Empresa>
+  public class FazendaModelConfiguration : IEntityTypeConfiguration<Fazenda>
   {
-    public virtual void Configure(EntityTypeBuilder<Empresa> builder)
+    public virtual void Configure(EntityTypeBuilder<Fazenda> builder)
     {
 
     }

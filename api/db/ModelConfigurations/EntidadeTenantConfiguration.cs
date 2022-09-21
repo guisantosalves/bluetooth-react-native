@@ -8,9 +8,9 @@ namespace Alpha.Pesagem.Api.Data.ModelConfigurations
   {
     public virtual void Configure(EntityTypeBuilder<E> builder)
     {
-      builder.HasOne(q => q.Empresa)
+      builder.HasOne(q => q.Fazenda)
       .WithMany()
-      .HasForeignKey(q => q.EmpresaId)
+      .HasForeignKey(q => q.FazendaId)
       .IsRequired()
       .OnDelete(DeleteBehavior.Restrict);
     }

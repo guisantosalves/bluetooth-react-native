@@ -8,6 +8,7 @@ using Alpha.Pesagem.Api.Services;
 using Alpha.Pesagem.Api.Validation;
 using Alpha.Pesagem.Api.Services.Auth;
 using Alpha.Pesagem.Api.ViewModels;
+using Alpha.Pesagem.Api.Models;
 
 namespace Alpha.Pesagem.Api.Controllers
 {
@@ -25,68 +26,43 @@ namespace Alpha.Pesagem.Api.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("Token")]
-        public async Task<IActionResult> GerarTokenAsync([FromBody] UsuarioLoginViewModel usuario)
+        public async Task<IActionResult> GerarTokenAsync([FromBody] LoginViewModel login)
         {
             var validator = new LoginValidator();
-            var validationResult = await validator.ValidateAsync(usuario);
+            var validationResult = await validator.ValidateAsync(login);
 
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
-            var usuarioValidado = await (this._service as UsuarioService).ValidarAsync(usuario.Id, usuario.Senha, usuario.EmpresaId);
+            var fazendaValidado = await (this._service as FazendaService).ValidarAsync(login);
 
-            if (usuarioValidado == null)
+            if (fazendaValidado == null)
             {
-                return BadRequest("Usuário, senha, ou id da empresa inválidos!");
+                return BadRequest("Fazenda inválida!");
             }
 
-            var token = (this._service as UsuarioService).GerarToken(usuarioValidado);
-            var refreshToken = await (this._service as UsuarioService).GerarRefreshTokenAsync(usuarioValidado);
+            var token = (this._service as FazendaService).GerarToken(fazendaValidado);
+            var refreshToken = await (this._service as FazendaService).GerarRefreshTokenAsync(fazendaValidado);
 
-            return Ok(new { token, userInfo = new { usuarioValidado.Nome, usuarioValidado.IdAlphaExpress, id = usuarioValidado.Id, empresa = usuarioValidado.Empresa.Nome }, refreshToken });
-        }
-
-        [AllowAnonymous]
-        [ApiConsumerFilter]
-        [HttpGet("ObterEmpresaId/{cnpj}")]
-        public async Task<IActionResult> ObterEmpresaId(string cnpj)
-        {
-            Guid? empresaId = await (this._service as UsuarioService).ObterEmpresaIdAsync(cnpj);
-
-            if (!empresaId.HasValue)
-            {
-                return BadRequest("Não foi encontrada uma empresa para este CPF/CNPJ");
-            }
-
-            return Ok(empresaId);
-        }
-
-        [AllowAnonymous]
-        [ApiConsumerFilter]
-        [HttpGet("ListarUsuariosEmpresa/{tenantId}")]
-        public async Task<IActionResult> ListarUsuariosEmpresaAsync(Guid tenantId)
-        {
-            var usuarios = await (this._service as UsuarioService).ListarUsuariosEmpresaAsync(tenantId);
-
-            return Ok(usuarios);
+            return Ok(new { token, info = new { fazendaValidado.Nome, fazendaValidado.Inativo, fazendaValidado.Id }, refreshToken });
         }
 
         [AllowAnonymous]
         [ApiConsumerFilter]
         [HttpPost("Incluir")]
-        public async Task<IActionResult> IncluirAsync([FromBody] Usuario usuario)
+        public async Task<IActionResult> IncluirAsync([FromBody] Fazenda fazenda)
         {
-            var validator = new UsuarioSaveValidator();
-            var validationResult = await validator.ValidateAsync(usuario);
+            var validator = new LoginSaveValidator();
+            var validationResult = await validator.ValidateAsync(fazenda);
 
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
-            var id = await (this._service as UsuarioService).IncluirAsync(usuario);
+            var id = await (this._service as FazendaService).IncluirAsync(fazenda);
 
             return Ok(id);
         }
@@ -96,7 +72,7 @@ namespace Alpha.Pesagem.Api.Controllers
         [HttpDelete("Remover/{id}")]
         public async Task<IActionResult> RemoverAsync(Guid id)
         {
-            await (this._service as UsuarioService).RemoverAsync(id);
+            await (this._service as FazendaService).RemoverAsync(id);
 
             return Ok();
         }
@@ -113,22 +89,22 @@ namespace Alpha.Pesagem.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var usuario = await (this._service as UsuarioService).ValidarUsuarioDoRefreshTokenAsync(tokenRefreshViewModel);
+            var fazenda = await (this._service as FazendaService).ValidarFazendaDoRefreshTokenAsync(tokenRefreshViewModel);
 
-            if (usuario == null)
+            if (fazenda == null)
             {
                 return BadRequest("O token de atualização não pôde ser validado");
             }
 
-            var claimsAntigas = (this._service as UsuarioService).ObterClaimsDoTokenExpirado(tokenRefreshViewModel.ExpiredToken);
+            var claimsAntigas = (this._service as FazendaService).ObterClaimsDoTokenExpirado(tokenRefreshViewModel.ExpiredToken);
 
-            await (this._service as UsuarioService).ValidarAsync(usuario.Id, usuario.Senha, usuario.EmpresaId);
+            await (this._service as FazendaService).ValidarAsync(new LoginViewModel { Id = fazenda.Id, FazendaId = fazenda.Id });
 
-            var token = (this._service as UsuarioService).GerarToken(usuario);
-            var refreshToken = await (this._service as UsuarioService).GerarRefreshTokenAsync(usuario);
+            var token = (this._service as FazendaService).GerarToken(fazenda);
+            var refreshToken = await (this._service as FazendaService).GerarRefreshTokenAsync(fazenda);
             return Ok(new
             {
-                primeiroNome = usuario.Nome,
+                primeiroNome = fazenda.Nome,
                 token = token,
                 refreshToken = refreshToken
             });

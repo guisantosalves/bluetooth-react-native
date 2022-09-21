@@ -11,28 +11,28 @@ namespace Alpha.Vendas.Api.Controllers
     [ApiController]
     [AllowAnonymous]
     [Route("api/[controller]")]
-    public class EmpresasController : ControllerBase
+    public class FazendasController : ControllerBase
     {
-        private IDataService<Empresa> _service;
-        public EmpresasController(IDataService<Empresa> service)
+        private IDataService<Fazenda> _service;
+        public FazendasController(IDataService<Fazenda> service)
         {
             _service = service;
         }
 
         [ApiConsumerFilter]
         [HttpPost("Incluir")]
-        public async Task<IActionResult> IncluirAsync([FromBody] Empresa empresa)
+        public async Task<IActionResult> IncluirAsync([FromBody] Fazenda fazenda)
         {
-            var obj = await this._service.IncluirAsync(empresa);
+            var obj = await this._service.IncluirAsync(fazenda);
 
             return Ok(obj.Id);
         }
 
         [ApiConsumerFilter]
         [HttpPut("Alterar/{id}")]
-        public async Task<IActionResult> AlterarAsync([FromBody] Empresa empresa, Guid id)
+        public async Task<IActionResult> AlterarAsync([FromBody] Fazenda fazenda, Guid id)
         {
-            var obj = await this._service.AlterarAsync(id, empresa);
+            var obj = await this._service.AlterarAsync(id, fazenda);
 
             return Ok(obj.Id);
         }
@@ -51,15 +51,6 @@ namespace Alpha.Vendas.Api.Controllers
         public async Task<IActionResult> ObterUmAsync(Guid id)
         {
             var obj = await this._service.ObterUmAsync(id);
-
-            return Ok(obj);
-        }
-
-        [ApiConsumerFilter]
-        [HttpGet("ObterPorCnpj/{cnpj}")]
-        public async Task<IActionResult> ObterPorCnpjAsync(string cnpj)
-        {
-            var obj = await ((EmpresaService)this._service).ObterPorCnpjAsync(cnpj);
 
             return Ok(obj);
         }

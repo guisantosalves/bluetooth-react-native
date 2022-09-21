@@ -119,20 +119,20 @@ namespace Alpha.Pesagem.Api.Services
 
   public class TenantReadOnlyDataService<T> : ReadOnlyDataService<T>, IReadOnlyDataService<T> where T : EntidadeTenant, IAlphaExpressRef
   {
-    protected readonly Empresa Empresa;
-    public TenantReadOnlyDataService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+    protected readonly Fazenda Fazenda;
+    public TenantReadOnlyDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
     {
-      Empresa = empresa;
-      _context.Tenant = empresa;
+      Fazenda = fazenda;
+      _context.Tenant = fazenda;
     }
   }
   public class TenantDataService<T> : DataService<T>, ITenantDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
   {
-    public Empresa Empresa { get; set; }
-    public TenantDataService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+    public Fazenda Fazenda { get; set; }
+    public TenantDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
     {
-      Empresa = empresa;
-      _context.Tenant = Empresa;
+      Fazenda = fazenda;
+      _context.Tenant = Fazenda;
     }
 
     public virtual async Task<T> SalvarAsync(T obj)
@@ -221,14 +221,14 @@ namespace Alpha.Pesagem.Api.Services
 
   public class TenantLogReadOnlyDataService<T> : TenantReadOnlyDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
   {
-    public TenantLogReadOnlyDataService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, empresa, httpContextAccessor)
+    public TenantLogReadOnlyDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
     {
     }
   }
 
   public class TenantLogDataService<T> : TenantDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
   {
-    public TenantLogDataService(AlphaDbContext context, Empresa empresa, IHttpContextAccessor httpContextAccessor) : base(context, empresa, httpContextAccessor)
+    public TenantLogDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
     {
     }
   }
