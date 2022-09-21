@@ -12,6 +12,8 @@ namespace Alpha.Pesagem.Api.Models
 
     public FazendaInativa Inativo { get; set; }
 
+    public int? IdAlphaExpress { get; set; }
+
     public DateTime DataCriacao { get; set; }
 
     public DateTime? DataAlteracao { get; set; }

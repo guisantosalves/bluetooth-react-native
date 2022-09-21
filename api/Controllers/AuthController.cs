@@ -46,7 +46,7 @@ namespace Alpha.Pesagem.Api.Controllers
             var token = (this._service as FazendaService).GerarToken(fazendaValidado);
             var refreshToken = await (this._service as FazendaService).GerarRefreshTokenAsync(fazendaValidado);
 
-            return Ok(new { token, info = new { fazendaValidado.Nome, fazendaValidado.Inativo, fazendaValidado.Id }, refreshToken });
+            return Ok(new { token, info = new { fazendaValidado.Nome, fazendaValidado.Inativo, fazendaValidado.IdAlphaExpress, fazendaValidado.Id }, refreshToken });
         }
 
         [AllowAnonymous]
