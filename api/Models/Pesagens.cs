@@ -4,7 +4,6 @@ namespace Alpha.Pesagem.Api.Models
 {
     public class Peso : EntidadeTenant, IDateLog, IAlphaExpressRef
     {
-        public int FazendaId { get; set; }
         public string Brinco { get; set; }
         public string BrincoEletronico { get; set; }
         public string PesoTotal { get; set; }
