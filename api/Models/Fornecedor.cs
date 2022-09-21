@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Alpha.Pesagem.Api.Models
 {
-  public class Fornecedor : EntidadeTenant, IAlphaExpressRef, IUsuarioLog, IDateLog
+  public class Fornecedor : EntidadeTenant, IAlphaExpressRef, IDateLog
   {
     public int? IdAlphaExpress { get; set; }
 
@@ -80,14 +80,6 @@ namespace Alpha.Pesagem.Api.Models
     public int? CodigoIbgeCidade { get; set; }
 
     public FornecedorStatusSincronizado Sincronizado { get; set; }
-
-    public Guid? UsuarioCriacaoId { get; set; }
-
-    public virtual Usuario UsuarioCriacao { get; set; }
-
-    public Guid? UsuarioAlteracaoId { get; set; }
-
-    public virtual Usuario UsuarioAlteracao { get; set; }
 
     public DateTime DataCriacao { get; set; }
 

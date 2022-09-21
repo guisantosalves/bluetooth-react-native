@@ -6,7 +6,7 @@ using Alpha.Pesagem.Api.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Alpha.Vendas.Api.Controllers
+namespace Alpha.Pesagem.Api.Controllers
 {
     [ApiController]
     [AllowAnonymous]

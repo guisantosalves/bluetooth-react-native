@@ -56,11 +56,6 @@ namespace Alpha.Pesagem.Api.Services
       obj.Id = id;
       obj.DataCriacao = oldObj.DataCriacao;
 
-      if (obj is IUsuarioLog)
-      {
-        ((IUsuarioLog)obj).UsuarioCriacaoId = ((IUsuarioLog)oldObj).UsuarioCriacaoId;
-      }
-
       this._context.Update(obj);
       await this._context.SaveChangesAsync();
 

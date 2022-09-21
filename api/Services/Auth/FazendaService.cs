@@ -13,11 +13,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
-using Alpha.Vendas.Api.Exceptions;
+using Alpha.Pesagem.Api.Exceptions;
 
 namespace Alpha.Pesagem.Api.Services
 {
-    public class FazendaService : ReadOnlyDataService<Fazenda>
+    public class FazendaService : DataService<Fazenda>
     {
         private IConfiguration _configuration;
         public FazendaService(AlphaDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
@@ -71,15 +71,15 @@ namespace Alpha.Pesagem.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<Guid> IncluirAsync(Fazenda novaFazenda)
-        {
-            novaFazenda.Inativo = FazendaInativa.Ativo;
+        // public async Task<Guid> IncluirAsync(Fazenda novaFazenda)
+        // {
+        //     novaFazenda.Inativo = FazendaInativa.Ativo;
 
-            await this._context.Fazendas.AddAsync(novaFazenda);
-            await this._context.SaveChangesAsync();
+        //     await this._context.Fazendas.AddAsync(novaFazenda);
+        //     await this._context.SaveChangesAsync();
 
-            return novaFazenda.Id;
-        }
+        //     return novaFazenda.Id;
+        // }
 
         public async Task<Guid> GerarRefreshTokenAsync(Fazenda fazenda)
         {
@@ -150,18 +150,18 @@ namespace Alpha.Pesagem.Api.Services
             return principal;
         }
 
-        public async Task RemoverAsync(Guid id)
-        {
-            var fazenda = await this._context.Set<Fazenda>().SingleOrDefaultAsync(q => q.Id == id);
+        // public async Task RemoverAsync(Guid id)
+        // {
+        //     var fazenda = await this._context.Set<Fazenda>().SingleOrDefaultAsync(q => q.Id == id);
 
-            if (fazenda == null)
-            {
-                throw new AlphaBadRequestException("Fazenda não encontrada para a exclusão");
-            }
+        //     if (fazenda == null)
+        //     {
+        //         throw new AlphaBadRequestException("Fazenda não encontrada para a exclusão");
+        //     }
 
-            this._context.Set<Fazenda>().Remove(fazenda);
-            await this._context.SaveChangesAsync();
-        }
+        //     this._context.Set<Fazenda>().Remove(fazenda);
+        //     await this._context.SaveChangesAsync();
+        // }
 
     }
 }

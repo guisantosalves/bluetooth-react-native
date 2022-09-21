@@ -8,10 +8,10 @@ namespace Alpha.Pesagem.Api.Resolvers
     {
         public static void AddDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IReadOnlyDataService<Fazenda>, FazendaService>();
             services.AddScoped<IDataService<Peso>, PesoService>();
             services.AddScoped<ITenantDataService<Fornecedor>, FornecedorService>();
             services.AddScoped<ITenantDataService<Log>, LogService>();
+            services.AddScoped<IDataService<Fazenda>, FazendaService>();
         }
     }
 }
