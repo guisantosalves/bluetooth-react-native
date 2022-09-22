@@ -12,12 +12,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
-    public class PesoService : TenantLogDataService<Peso>
+    public class PesoService : DataService<Peso>
     {
-        private IHttpContextAccessor accessor;
-        public PesoService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
+        public PesoService(AlphaDbContext context) : base(context)
         {
-            this.accessor = httpContextAccessor;
         }
 
         public override IQueryable<Peso> Query()
@@ -46,8 +44,7 @@ namespace Alpha.Pesagem.Api.Services
                     {
                         if (item.Value == 0)
                         {
-                            var tenantId = accessor.HttpContext.User.Claims.FirstOrDefault(q => q.Type == AlphaClaimTypes.TenantId);
-                            throw new AlphaBadRequestException($"O item {count} referente ao pedido {item.Key} está com id zerado, não é possível sincronizar no cliente {tenantId}!");
+                            throw new AlphaBadRequestException($"O item {count} referente ao pedido {item.Key} está com id zerado!");
                         }
 
                         var pesagem = await this.Query().Where(q => q.Id == item.Key).FirstOrDefaultAsync();
@@ -96,8 +93,6 @@ namespace Alpha.Pesagem.Api.Services
 
         public override async Task<IEnumerable<Peso>> ObterRegistrosComparadosAsync(List<ModelComparacaoViewModel> lista, int? diasAnteriores)
         {
-            var usuarioId = Guid.Parse(this._context.HttpContext.User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.Sid).Value);
-
             // Compara os registros para descobrir quem foi adicionado/alterado
             var registrosExistentes = await this.Query()
               .AsNoTracking()

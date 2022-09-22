@@ -47,7 +47,6 @@ namespace Api.Pesagem
 
             services.AddMultitenancy<Fazenda, CachingTenantResolver>();
             services.AddDataServices();
-            services.AddHttpContextAccessor();
             ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("pt-BR");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

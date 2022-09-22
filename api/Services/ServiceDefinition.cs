@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
@@ -23,14 +22,8 @@ namespace Alpha.Pesagem.Api.Services
     Task<IEnumerable<T>> ObterRegistrosComparadosAsync(List<ModelComparacaoViewModel> comparacao, int? diasAnteriores);
   }
 
-  public interface ITenantReadOnlyDataService<T> : IReadOnlyDataService<T> where T : EntidadeTenant
+  public interface ITenantDataService<T> : IDataService<T> where T : EntidadeBase
   {
-    Fazenda Fazenda { get; set; }
-  }
-
-  public interface ITenantDataService<T> : IDataService<T> where T : EntidadeTenant
-  {
-    Fazenda Fazenda { get; set; }
     Task<T> SalvarAsync(T obj);
     Task SalvarEmLoteAlphaExpressAsync(IEnumerable<T> list);
     Task SalvarEmLoteAsync(IEnumerable<T> list);

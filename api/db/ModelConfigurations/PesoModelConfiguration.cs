@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Alpha.Pesagem.Api.Data.ModelConfigurations
 {
-  public class PesoModelConfiguration : IEntityTypeConfiguration<Peso>
-  {
-    public virtual void Configure(EntityTypeBuilder<Peso> builder)
+    public class PesoModelConfiguration : IEntityTypeConfiguration<Peso>
     {
+        public virtual void Configure(EntityTypeBuilder<Peso> builder)
+        {
 
+        }
     }
-  }
 }

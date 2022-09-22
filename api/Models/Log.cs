@@ -2,7 +2,7 @@ using System;
 
 namespace Alpha.Pesagem.Api.Models
 {
-  public class Log : EntidadeTenant, IAlphaExpressRef, IDateLog
+  public class Log : EntidadeBase, IAlphaExpressRef, IDateLog
   {
     public int? IdAlphaExpress { get; set; }
 

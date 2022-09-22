@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Api.Pesagem.Migrations
 {
-    public partial class T_Iniciando : Migration
+    public partial class T_InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,18 +50,11 @@ namespace Api.Pesagem.Migrations
                     Sincronizado = table.Column<short>(type: "smallint", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Aviso = table.Column<string>(type: "text", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Aviso = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Fornecedor", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Fornecedor_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,18 +65,11 @@ namespace Api.Pesagem.Migrations
                     IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
                     Mensagem = table.Column<string>(type: "text", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Log", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Log_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,6 +80,7 @@ namespace Api.Pesagem.Migrations
                     Brinco = table.Column<string>(type: "text", nullable: true),
                     BrincoEletronico = table.Column<string>(type: "text", nullable: true),
                     PesoTotal = table.Column<string>(type: "text", nullable: true),
+                    FazendaId = table.Column<string>(type: "text", nullable: true),
                     Idade = table.Column<string>(type: "text", nullable: true),
                     Raca = table.Column<string>(type: "text", nullable: true),
                     ValorMedio = table.Column<string>(type: "text", nullable: true),
@@ -102,43 +89,19 @@ namespace Api.Pesagem.Migrations
                     Sincronizado = table.Column<short>(type: "smallint", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true),
-                    FazendaId = table.Column<Guid>(type: "uuid", nullable: false)
+                    IdAlphaExpress = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Peso", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Peso_Fazendas_FazendaId",
-                        column: x => x.FazendaId,
-                        principalTable: "Fazendas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Fazendas_Id",
-                table: "Fazendas",
-                column: "Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Fornecedor_FazendaId",
-                table: "Fornecedor",
-                column: "FazendaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_FazendaId",
-                table: "Log",
-                column: "FazendaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Peso_FazendaId",
-                table: "Peso",
-                column: "FazendaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Fazendas");
+
             migrationBuilder.DropTable(
                 name: "Fornecedor");
 
@@ -147,9 +110,6 @@ namespace Api.Pesagem.Migrations
 
             migrationBuilder.DropTable(
                 name: "Peso");
-
-            migrationBuilder.DropTable(
-                name: "Fazendas");
         }
     }
 }

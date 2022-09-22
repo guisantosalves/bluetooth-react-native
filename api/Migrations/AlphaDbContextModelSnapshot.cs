@@ -43,8 +43,6 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
-
                     b.ToTable("Fazendas");
                 });
 
@@ -104,9 +102,6 @@ namespace Api.Pesagem.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
-                    b.Property<Guid>("FazendaId")
-                        .HasColumnType("uuid");
-
                     b.Property<int?>("IdAlphaExpress")
                         .HasColumnType("integer");
 
@@ -146,8 +141,6 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FazendaId");
-
                     b.ToTable("Fornecedor");
                 });
 
@@ -163,9 +156,6 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("FazendaId")
-                        .HasColumnType("uuid");
-
                     b.Property<int?>("IdAlphaExpress")
                         .HasColumnType("integer");
 
@@ -173,8 +163,6 @@ namespace Api.Pesagem.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FazendaId");
 
                     b.ToTable("Log");
                 });
@@ -197,8 +185,8 @@ namespace Api.Pesagem.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("FazendaId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("FazendaId")
+                        .HasColumnType("text");
 
                     b.Property<int?>("IdAlphaExpress")
                         .HasColumnType("integer");
@@ -226,42 +214,7 @@ namespace Api.Pesagem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FazendaId");
-
                     b.ToTable("Peso");
-                });
-
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fornecedor", b =>
-                {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
-                        .WithMany()
-                        .HasForeignKey("FazendaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Fazenda");
-                });
-
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
-                {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
-                        .WithMany()
-                        .HasForeignKey("FazendaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Fazenda");
-                });
-
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
-                {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
-                        .WithMany()
-                        .HasForeignKey("FazendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fazenda");
                 });
 #pragma warning restore 612, 618
         }
