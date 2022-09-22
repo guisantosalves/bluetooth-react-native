@@ -6,10 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Data;
 using Alpha.Pesagem.Api.Models;
-using Alpha.Pesagem.Api.Resolvers;
 using Alpha.Pesagem.Api.ViewModels;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
@@ -20,24 +18,24 @@ namespace Alpha.Pesagem.Api.Services
     public class FazendaService : DataService<Fazenda>
     {
         private IConfiguration _configuration;
-        public FazendaService(AlphaDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public FazendaService(AlphaDbContext context, IConfiguration configuration) : base(context)
         {
             this._configuration = configuration;
         }
 
-        public List<Claim> GerarUsuarioClaims()
+        public List<Claim> GerarUsuarioClaims(Fazenda fazenda)
         {
             List<Claim> claims = new List<Claim>();
 
-            claims.Add(new Claim(AlphaClaimTypes.TenantNome, this._context.Tenant.Nome));
-            claims.Add(new Claim(AlphaClaimTypes.TenantId, this._context.Tenant.Id.ToString()));
+            claims.Add(new Claim(AlphaClaimTypes.TenantNome, fazenda.Nome));
+            claims.Add(new Claim(AlphaClaimTypes.TenantId, fazenda.Id.ToString()));
 
             return claims;
 
         }
         public async Task<Fazenda> ValidarAsync(LoginViewModel login)
         {
-            var fazenda = await this._context.Fazendas.IgnoreQueryFilters().SingleOrDefaultAsync(u => u.Id == login.Id && u.Id == login.FazendaId);
+            var fazenda = await this._context.Fazendas.IgnoreQueryFilters().SingleOrDefaultAsync(u => u.Id == login.Id);
 
             if (fazenda == null)
             {
@@ -49,13 +47,8 @@ namespace Alpha.Pesagem.Api.Services
 
         public string GerarToken(Fazenda fazenda)
         {
-            if (this._context.Tenant.Id == Guid.Empty)
-            {
-                throw new Exception("Falha ao obter domínio do token");
-            }
-
             //Setando as principais claims que estarão no token, incluindo o domínio
-            var claims = this.GerarUsuarioClaims();
+            var claims = this.GerarUsuarioClaims(fazenda);
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:SigningKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -85,7 +78,7 @@ namespace Alpha.Pesagem.Api.Services
         {
             var refreshToken = await this._context
                 .Set<RefreshToken>()
-                .Where(token => token.FazendaId == fazenda.Id)
+                .Where(token => token.Id == fazenda.Id)
                 .FirstOrDefaultAsync();
 
             var token = Guid.NewGuid();
@@ -163,5 +156,12 @@ namespace Alpha.Pesagem.Api.Services
         //     await this._context.SaveChangesAsync();
         // }
 
+    }
+
+    public static class AlphaClaimTypes
+    {
+        public const string TenantId = "TenantId";
+
+        public const string TenantNome = "TenantNome";
     }
 }
