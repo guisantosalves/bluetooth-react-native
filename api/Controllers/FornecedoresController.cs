@@ -13,9 +13,9 @@ namespace Alpha.Pesagem.Api.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  public class FornecedoresController : TenantController<Fornecedor>
+  public class FornecedoresController : BaseController<Fornecedor>
   {
-    public FornecedoresController(ITenantDataService<Fornecedor> service, IHttpContextAccessor context) : base(service, context)
+    public FornecedoresController(ITenantDataService<Fornecedor> service) : base(service)
     {
     }
 

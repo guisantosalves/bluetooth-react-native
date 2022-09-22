@@ -12,9 +12,9 @@ namespace Alpha.Pesagem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PesosController : TenantController<Peso>
+    public class PesosController : BaseController<Peso>
     {
-        public PesosController(ITenantDataService<Peso> service, IHttpContextAccessor context) : base(service, context)
+        public PesosController(ITenantDataService<Peso> service) : base(service)
         {
         }
 

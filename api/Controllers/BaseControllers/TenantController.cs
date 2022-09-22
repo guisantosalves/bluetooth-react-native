@@ -12,18 +12,12 @@ namespace Alpha.Pesagem.Api.Controllers.BaseControllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public abstract class TenantController<T> : ControllerBase where T : EntidadeTenant
+    public abstract class BaseController<T> : ControllerBase where T : EntidadeBase
     {
         protected ITenantDataService<T> _service;
-        public TenantController(ITenantDataService<T> service, IHttpContextAccessor context)
+        public BaseController(ITenantDataService<T> service)
         {
             _service = service;
-            var tenantContext = context.HttpContext.GetTenantContext<Fazenda>();
-
-            if (tenantContext != null)
-            {
-                _service.Fazenda = tenantContext.Tenant;
-            }
         }
 
         [HttpPost("Salvar")]

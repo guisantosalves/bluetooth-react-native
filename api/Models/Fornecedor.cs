@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Alpha.Pesagem.Api.Models
 {
-  public class Fornecedor : EntidadeTenant, IAlphaExpressRef, IDateLog
+  public class Fornecedor : EntidadeBase, IAlphaExpressRef, IDateLog
   {
     public int? IdAlphaExpress { get; set; }
 

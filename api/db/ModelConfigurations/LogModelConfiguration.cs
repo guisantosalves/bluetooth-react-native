@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Alpha.Pesagem.Api.Data.ModelConfigurations
 {
-  public class LogModelConfiguration : EntidadeTenantLogConfiguration<Log>
-  {
-    public override void Configure(EntityTypeBuilder<Log> builder)
+    public class LogModelConfiguration : IEntityTypeConfiguration<Log>
     {
-      base.Configure(builder);
+        public virtual void Configure(EntityTypeBuilder<Log> builder)
+        {
+        }
     }
-  }
 }

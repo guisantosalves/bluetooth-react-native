@@ -10,18 +10,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
-  public class FornecedorService : TenantLogDataService<Fornecedor>
+  public class FornecedorService : DataService<Fornecedor>
   {
-    public FornecedorService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
+    public FornecedorService(AlphaDbContext context) : base(context)
     {
-
     }
 
     public override async Task<IEnumerable<Fornecedor>> ObterRegistrosComparadosAsync(List<ModelComparacaoViewModel> lista, int? diasAnteriores)
     {
-      var fazendaId = Guid.Parse(this._context.HttpContext.User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.Sid).Value);
-      var fazenda = await this._context.Set<Fazenda>().FirstOrDefaultAsync(q => q.Id == fazendaId);
-
       // Compara os registros para descobrir quem foi adicionado/alterado
       var registrosExistentes = await this.Query()
         .Where(q => lista.Select(qi => qi.Id).Contains(q.Id))
@@ -50,10 +46,6 @@ namespace Alpha.Pesagem.Api.Services
       }
 
       var result = await query.ToListAsync();
-
-      result = result
-        .Where(q => (!string.IsNullOrWhiteSpace(q.Vendedores) ? Convert.ToString(q.Vendedores).Split(",").Contains(fazenda.IdAlphaExpress.Value.ToString()) : true))
-        .ToList();
 
       return result.Where(q => !registrosDesnecessarios.Any(d => q.Id == d.Id)).ToList();
     }

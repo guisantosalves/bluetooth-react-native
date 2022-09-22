@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Data;
 using Alpha.Pesagem.Api.Models;
-using Alpha.Pesagem.Api.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
@@ -13,10 +11,9 @@ namespace Alpha.Pesagem.Api.Services
   public class ReadOnlyDataService<T> : IReadOnlyDataService<T> where T : EntidadeBase
   {
     protected readonly AlphaDbContext _context;
-    public ReadOnlyDataService(AlphaDbContext context, IHttpContextAccessor httpContextAccessor)
+    public ReadOnlyDataService(AlphaDbContext context)
     {
       _context = context;
-      _context.HttpContext = httpContextAccessor.HttpContext;
     }
 
     public virtual async Task<IEnumerable<Guid>> ObterRegistrosRemovidosAsync(IEnumerable<Guid> lista)
@@ -42,9 +39,9 @@ namespace Alpha.Pesagem.Api.Services
     }
   }
 
-  public class DataService<T> : ReadOnlyDataService<T>, IDataService<T> where T : EntidadeBase, IDateLog
+  public class DataService<T> : ReadOnlyDataService<T>, IDataService<T> where T : EntidadeBase, IDateLog, IAlphaExpressRef
   {
-    public DataService(AlphaDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+    public DataService(AlphaDbContext context) : base(context)
     {
 
     }
@@ -110,25 +107,6 @@ namespace Alpha.Pesagem.Api.Services
 
       return result.Where(q => !registrosDesnecessarios.Any(d => q.Id == d.Id)).ToList();
     }
-  }
-
-  public class TenantReadOnlyDataService<T> : ReadOnlyDataService<T>, IReadOnlyDataService<T> where T : EntidadeTenant, IAlphaExpressRef
-  {
-    protected readonly Fazenda Fazenda;
-    public TenantReadOnlyDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
-    {
-      Fazenda = fazenda;
-      _context.Tenant = fazenda;
-    }
-  }
-  public class TenantDataService<T> : DataService<T>, ITenantDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
-  {
-    public Fazenda Fazenda { get; set; }
-    public TenantDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
-    {
-      Fazenda = fazenda;
-      _context.Tenant = Fazenda;
-    }
 
     public virtual async Task<T> SalvarAsync(T obj)
     {
@@ -155,7 +133,7 @@ namespace Alpha.Pesagem.Api.Services
         {
           foreach (var obj in list)
           {
-            if (obj.IdAlphaExpress.HasValue)
+            if (obj.DataAlteracao.HasValue)
             {
               var oldObj = await this.Query().AsNoTracking().FirstOrDefaultAsync(q => q.IdAlphaExpress == obj.IdAlphaExpress.Value);
 
@@ -211,20 +189,6 @@ namespace Alpha.Pesagem.Api.Services
           throw;
         }
       }
-    }
-  }
-
-  public class TenantLogReadOnlyDataService<T> : TenantReadOnlyDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
-  {
-    public TenantLogReadOnlyDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
-    {
-    }
-  }
-
-  public class TenantLogDataService<T> : TenantDataService<T> where T : EntidadeTenant, IAlphaExpressRef, IDateLog
-  {
-    public TenantLogDataService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
-    {
     }
   }
 }

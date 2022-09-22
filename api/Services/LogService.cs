@@ -9,20 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
-  public class LogService : TenantDataService<Log>
+  public class LogService : DataService<Log>
   {
-    public LogService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
+    public LogService(AlphaDbContext context) : base(context)
     {
 
-    }
-
-    public async Task<IEnumerable<Log>> Filtrar(Guid fazendaId)
-    {
-      var registros = await this.Query()
-        .Where(q => q.FazendaId == fazendaId)
-        .ToListAsync();
-
-      return registros;
     }
 
     public override async Task SalvarEmLoteAsync(IEnumerable<Log> list)

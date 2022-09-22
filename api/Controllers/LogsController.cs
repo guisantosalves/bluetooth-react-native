@@ -14,9 +14,9 @@ namespace Alpha.Pesagem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LogsController : TenantController<Log>
+    public class LogsController : BaseController<Log>
     {
-        public LogsController(ITenantDataService<Log> service, IHttpContextAccessor context) : base(service, context)
+        public LogsController(ITenantDataService<Log> service) : base(service)
         {
         }
 
