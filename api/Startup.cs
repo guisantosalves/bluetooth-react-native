@@ -46,7 +46,6 @@ namespace Api.Pesagem
             });
 
             services.AddDataServices();
-            services.AddHttpContextAccessor();
             ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("pt-BR");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

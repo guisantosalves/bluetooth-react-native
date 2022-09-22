@@ -17,7 +17,7 @@ namespace Alpha.Pesagem.Api.Controllers
     public class AuthController : ControllerBase
     {
         private IDataService<Fazenda> _service;
-        public AuthController(IDataService<Fazenda> service)
+        public AuthController(DataService<Fazenda> service)
         {
             _service = service;
         }

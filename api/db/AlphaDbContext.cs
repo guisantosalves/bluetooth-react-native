@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Data.ModelConfigurations;
 using Alpha.Pesagem.Api.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Data
