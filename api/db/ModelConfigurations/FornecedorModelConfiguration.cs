@@ -1,13 +1,13 @@
-using Alpha.Pesagem.Api.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+// using Alpha.Pesagem.Api.Models;
+// using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Alpha.Pesagem.Api.Data.ModelConfigurations
-{
-    public class FornecedorModelConfiguration : IEntityTypeConfiguration<Fornecedor>
-    {
-        public virtual void Configure(EntityTypeBuilder<Fornecedor> builder)
-        {
-        }
-    }
-}
+// namespace Alpha.Pesagem.Api.Data.ModelConfigurations
+// {
+//   public class FornecedorModelConfiguration : EntidadeTenantLogConfiguration<Fornecedor>
+//   {
+//     public override void Configure(EntityTypeBuilder<Fornecedor> builder)
+//     {
+//       base.Configure(builder);
+//     }
+//   }
+// }

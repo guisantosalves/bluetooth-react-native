@@ -16,8 +16,8 @@ namespace Alpha.Pesagem.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private IReadOnlyDataService<Fazenda> _service;
-        public AuthController(IReadOnlyDataService<Fazenda> service)
+        private IDataService<Fazenda> _service;
+        public AuthController(DataService<Fazenda> service)
         {
             _service = service;
         }
@@ -97,7 +97,7 @@ namespace Alpha.Pesagem.Api.Controllers
 
             var claimsAntigas = (this._service as FazendaService).ObterClaimsDoTokenExpirado(tokenRefreshViewModel.ExpiredToken);
 
-            await (this._service as FazendaService).ValidarAsync(new LoginViewModel { Id = fazenda.Id, FazendaId = fazenda.Id });
+            await (this._service as FazendaService).ValidarAsync(new LoginViewModel { Id = fazenda.Id });
 
             var token = (this._service as FazendaService).GerarToken(fazenda);
             var refreshToken = await (this._service as FazendaService).GerarRefreshTokenAsync(fazenda);

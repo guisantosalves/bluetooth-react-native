@@ -1,103 +1,109 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using Alpha.Pesagem.Api.Models;
-using Alpha.Pesagem.Api.Services;
+// using System;
+// using System.Threading.Tasks;
+// using Microsoft.AspNetCore.Mvc;
+// using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Http;
+// using System.Collections.Generic;
+// using Alpha.Pesagem.Api.Models;
+// using Alpha.Pesagem.Api.Services;
 
-namespace Alpha.Pesagem.Api.Controllers.BaseControllers
-{
-    [ApiController]
-    [Authorize]
-    [Route("api/[controller]")]
-    public abstract class BaseController<T> : ControllerBase where T : EntidadeBase
-    {
-        protected ITenantDataService<T> _service;
-        public BaseController(ITenantDataService<T> service)
-        {
-            _service = service;
-        }
+// namespace Alpha.Pesagem.Api.Controllers.BaseControllers
+// {
+//     [ApiController]
+//     [Authorize]
+//     [Route("api/[controller]")]
+//     public abstract class TenantController<T> : ControllerBase where T : EntidadeTenant
+//     {
+//         protected ITenantDataService<T> _service;
+//         public TenantController(ITenantDataService<T> service, IHttpContextAccessor context)
+//         {
+//             _service = service;
+//             var tenantContext = context.HttpContext.GetTenantContext<Fazenda>();
 
-        [HttpPost("Salvar")]
-        public virtual async Task<IActionResult> SaveAsync([FromBody] T obj)
-        {
-            var result = await this._service.SalvarAsync(obj);
+//             if (tenantContext != null)
+//             {
+//                 _service.Fazenda = tenantContext.Tenant;
+//             }
+//         }
 
-            return Ok(result);
-        }
+//         [HttpPost("Salvar")]
+//         public virtual async Task<IActionResult> SaveAsync([FromBody] T obj)
+//         {
+//             var result = await this._service.SalvarAsync(obj);
 
-        [HttpPost("SalvarEmLoteAlphaExpress")]
-        public virtual async Task<IActionResult> SalvarEmLoteAlphaExpressAsync([FromBody] IEnumerable<T> lista)
-        {
-            await this._service.SalvarEmLoteAlphaExpressAsync(lista);
+//             return Ok(result);
+//         }
 
-            return Ok();
-        }
+//         [HttpPost("SalvarEmLoteAlphaExpress")]
+//         public virtual async Task<IActionResult> SalvarEmLoteAlphaExpressAsync([FromBody] IEnumerable<T> lista)
+//         {
+//             await this._service.SalvarEmLoteAlphaExpressAsync(lista);
 
-        [HttpPost("SalvarEmLote")]
-        public virtual async Task<IActionResult> SalvarEmLoteAsync([FromBody] IEnumerable<T> lista)
-        {
-            await this._service.SalvarEmLoteAsync(lista);
+//             return Ok();
+//         }
 
-            return Ok();
-        }
+//         [HttpPost("SalvarEmLote")]
+//         public virtual async Task<IActionResult> SalvarEmLoteAsync([FromBody] IEnumerable<T> lista)
+//         {
+//             await this._service.SalvarEmLoteAsync(lista);
 
-        [HttpPost("Incluir")]
-        public virtual async Task<IActionResult> IncluirAsync([FromBody] T obj)
-        {
-            var result = await this._service.IncluirAsync(obj);
+//             return Ok();
+//         }
 
-            return Ok(result);
-        }
+//         [HttpPost("Incluir")]
+//         public virtual async Task<IActionResult> IncluirAsync([FromBody] T obj)
+//         {
+//             var result = await this._service.IncluirAsync(obj);
 
-        [HttpPut("Alterar/{id}")]
-        public virtual async Task<IActionResult> AlterarAsync([FromBody] T obj, Guid id)
-        {
-            var result = await this._service.AlterarAsync(id, obj);
+//             return Ok(result);
+//         }
 
-            return Ok(result);
-        }
+//         [HttpPut("Alterar/{id}")]
+//         public virtual async Task<IActionResult> AlterarAsync([FromBody] T obj, Guid id)
+//         {
+//             var result = await this._service.AlterarAsync(id, obj);
 
-        [HttpDelete("Remover/{id}")]
-        public virtual async Task<IActionResult> RemoverAsync(Guid id)
-        {
-            await this._service.RemoverAsync(id);
+//             return Ok(result);
+//         }
 
-            return Ok();
-        }
+//         [HttpDelete("Remover/{id}")]
+//         public virtual async Task<IActionResult> RemoverAsync(Guid id)
+//         {
+//             await this._service.RemoverAsync(id);
 
-        [HttpGet("ObterVarios")]
-        public virtual async Task<IActionResult> ObterVariosAsync()
-        {
-            var lista = await this._service.ObterVariosAsync();
+//             return Ok();
+//         }
 
-            return Ok(lista);
-        }
+//         [HttpGet("ObterVarios")]
+//         public virtual async Task<IActionResult> ObterVariosAsync()
+//         {
+//             var lista = await this._service.ObterVariosAsync();
 
-        [HttpPost("ObterRegistrosComparados")]
-        public virtual async Task<IActionResult> ObterRegistrosComparadosAsync([FromBody] List<ModelComparacaoViewModel> comparacao, [FromQuery] int? diasAnteriores)
-        {
-            var lista = await this._service.ObterRegistrosComparadosAsync(comparacao, diasAnteriores);
+//             return Ok(lista);
+//         }
 
-            return Ok(lista);
-        }
+//         [HttpPost("ObterRegistrosComparados")]
+//         public virtual async Task<IActionResult> ObterRegistrosComparadosAsync([FromBody] List<ModelComparacaoViewModel> comparacao, [FromQuery] int? diasAnteriores)
+//         {
+//             var lista = await this._service.ObterRegistrosComparadosAsync(comparacao, diasAnteriores);
 
-        [HttpPost("ObterRegistrosRemovidos")]
-        public virtual async Task<IActionResult> ObterRegistrosRemovidosAsync(List<Guid> registros)
-        {
-            var lista = await this._service.ObterRegistrosRemovidosAsync(registros);
+//             return Ok(lista);
+//         }
 
-            return Ok(lista);
-        }
+//         [HttpPost("ObterRegistrosRemovidos")]
+//         public virtual async Task<IActionResult> ObterRegistrosRemovidosAsync(List<Guid> registros)
+//         {
+//             var lista = await this._service.ObterRegistrosRemovidosAsync(registros);
 
-        [HttpGet("ObterUm/{id}")]
-        public virtual async Task<IActionResult> ObterUmAsync(Guid id)
-        {
-            var obj = await this._service.ObterUmAsync(id);
+//             return Ok(lista);
+//         }
 
-            return Ok(obj);
-        }
-    }
-}
+//         [HttpGet("ObterUm/{id}")]
+//         public virtual async Task<IActionResult> ObterUmAsync(Guid id)
+//         {
+//             var obj = await this._service.ObterUmAsync(id);
+
+//             return Ok(obj);
+//         }
+//     }
+// }

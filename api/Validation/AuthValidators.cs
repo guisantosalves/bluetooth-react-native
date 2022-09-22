@@ -10,7 +10,6 @@ namespace Alpha.Pesagem.Api.Validation
     public LoginValidator()
     {
       RuleFor(q => q.Id).NotNull();
-      RuleFor(q => q.FazendaId).NotNull();
     }
   }
   public class LoginSaveValidator : AbstractValidator<Fazenda>

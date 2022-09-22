@@ -40,7 +40,6 @@ namespace Alpha.Pesagem.Api.Data
           ((IDateLog)entityEntry.Entity).DataAlteracao = DateTime.UtcNow;
         }
       }
-
     }
 
     public override int SaveChanges()
@@ -61,9 +60,15 @@ namespace Alpha.Pesagem.Api.Data
       base.OnModelCreating(modelBuilder);
 
       modelBuilder.ApplyConfiguration(new FazendaModelConfiguration());
-      modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
-      modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
-      modelBuilder.ApplyConfiguration(new LogModelConfiguration());
+      modelBuilder.ApplyConfiguration(new RefreshTokenModelConfiguration());
+      // modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
+      // modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
+      // modelBuilder.ApplyConfiguration(new LogModelConfiguration());
+
+      // Criação de índices
+      
+      modelBuilder.Entity<Fazenda>().HasIndex(em => em.Id);
+      modelBuilder.Entity<RefreshToken>().HasIndex(em => em.FazendaId);
     }
   }
 }

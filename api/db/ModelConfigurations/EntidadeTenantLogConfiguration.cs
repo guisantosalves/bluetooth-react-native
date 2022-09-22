@@ -4,11 +4,11 @@
 
 // namespace Alpha.Pesagem.Api.Data.ModelConfigurations
 // {
-//   public class PesoModelConfiguration : IEntityTypeConfiguration<Peso>
+//   public abstract class EntidadeTenantLogConfiguration<E> : EntidadeTenantConfiguration<E> where E : EntidadeTenant
 //   {
-//     public virtual void Configure(EntityTypeBuilder<Peso> builder)
+//     public override void Configure(EntityTypeBuilder<E> builder)
 //     {
-
+//       base.Configure(builder);
 //     }
 //   }
 // }
