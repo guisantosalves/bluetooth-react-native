@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
-    public class  DataService<T> : IDataService<T> where T : EntidadeBase, IDateLog, IAlphaExpressRef
+    public class DataService<T> : IDataService<T> where T : EntidadeBase, IDateLog, IAlphaExpressRef
     {
         protected readonly AlphaDbContext _context;
         public DataService(AlphaDbContext context)
         {
-          _context = context;
+            _context = context;
         }
 
         public virtual async Task<T> AlterarAsync(Guid id, T obj)
@@ -171,6 +171,32 @@ namespace Alpha.Pesagem.Api.Services
                         {
                             await this.IncluirAsync(obj);
                         }
+                    }
+
+                    await ts.CommitAsync();
+                }
+                catch (System.Exception)
+                {
+                    ts.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task MarcarFlagSincronizadoEmLoteAsync(IEnumerable<KeyValuePair<Guid, int>> lista)
+        {
+            using (var ts = await this._context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach (var item in lista)
+                    {
+                        var fazenda = await this.Query().Where(q => q.Id == item.Key).FirstOrDefaultAsync();
+                        // fazenda.Sincronizado = FornecedorStatusSincronizado.CadastradoAlpha;
+                        fazenda.IdAlphaExpress = item.Value;
+
+                        this._context.Update(fazenda);
+                        await this._context.SaveChangesAsync();
                     }
 
                     await ts.CommitAsync();

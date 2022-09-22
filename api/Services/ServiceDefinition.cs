@@ -18,5 +18,6 @@ namespace Alpha.Pesagem.Api.Services
         Task<T> SalvarAsync(T obj);
         Task SalvarEmLoteAlphaExpressAsync(IEnumerable<T> list);
         Task SalvarEmLoteAsync(IEnumerable<T> list);
+        Task MarcarFlagSincronizadoEmLoteAsync(IEnumerable<KeyValuePair<Guid, int>> lista);
     }
 }
