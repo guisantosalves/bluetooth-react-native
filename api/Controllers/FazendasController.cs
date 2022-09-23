@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alpha.Pesagem.Api.Models;
 using Alpha.Pesagem.Api.Services;
-using Alpha.Pesagem.Api.Services.Auth;
+using Alpha.Pesagem.Api.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,48 +20,93 @@ namespace Alpha.Pesagem.Api.Controllers
             _service = service;
         }
 
-        [ApiConsumerFilter]
-        [HttpPost("Incluir")]
-        public async Task<IActionResult> IncluirAsync([FromBody] Fazenda fazenda)
-        {
-            var obj = await this._service.IncluirAsync(fazenda);
-
-            return Ok(obj.Id);
-        }
-
-        [ApiConsumerFilter]
         [HttpPut("Alterar/{id}")]
-        public async Task<IActionResult> AlterarAsync([FromBody] Fazenda fazenda, Guid id)
+        public virtual async Task<IActionResult> AlterarAsync([FromBody] Fazenda obj, Guid id)
         {
-            var obj = await this._service.AlterarAsync(id, fazenda);
+            var result = await this._service.AlterarAsync(id, obj);
 
-            return Ok(obj.Id);
+            return Ok(result);
         }
 
-        [ApiConsumerFilter]
         [HttpGet("ObterVarios")]
-        public async Task<IActionResult> ObterVariosAsync()
+        public virtual async Task<IActionResult> ObterVariosAsync()
         {
             var lista = await this._service.ObterVariosAsync();
 
             return Ok(lista);
         }
 
-        [ApiConsumerFilter]
+        [HttpPost("ObterRegistrosComparados")]
+        public virtual async Task<IActionResult> ObterRegistrosComparadosAsync([FromBody] List<ModelComparacaoViewModel> comparacao, [FromQuery] int? diasAnteriores)
+        {
+            var lista = await this._service.ObterRegistrosComparadosAsync(comparacao, diasAnteriores);
+
+            return Ok(lista);
+        }
+
+        [HttpPost("ObterRegistrosRemovidos")]
+        public virtual async Task<IActionResult> ObterRegistrosRemovidosAsync(List<Guid> registros)
+        {
+            var lista = await this._service.ObterRegistrosRemovidosAsync(registros);
+
+            return Ok(lista);
+        }
+
         [HttpGet("ObterUm/{id}")]
-        public async Task<IActionResult> ObterUmAsync(Guid id)
+        public virtual async Task<IActionResult> ObterUmAsync(Guid id)
         {
             var obj = await this._service.ObterUmAsync(id);
 
             return Ok(obj);
         }
 
-        [ApiConsumerFilter]
         [HttpDelete("Remover/{id}")]
         public async Task<IActionResult> RemoverAsync(Guid id)
         {
-            await this._service.RemoverAsync(id);
+            await (this._service as FazendaService).RemoverAsync(id);
 
+            return Ok();
+        }
+
+        [HttpPost("SalvarEmLoteAlphaExpress")]
+        public virtual async Task<IActionResult> SalvarEmLoteAlphaExpressAsync([FromBody] IEnumerable<Fazenda> lista)
+        {
+            var validator = new FazendaSaveEmLoteValidator();
+            var validationResult = await validator.ValidateAsync(lista);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            await this._service.SalvarEmLoteAlphaExpressAsync(lista);
+            return Ok();
+        }
+
+        [HttpPost("SalvarEmLote")]
+        public virtual async Task<IActionResult> SalvarEmLoteAsync([FromBody] IEnumerable<Fazenda> lista)
+        {
+            var validator = new FazendaSaveEmLoteValidator();
+            var validationResult = await validator.ValidateAsync(lista);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            await this._service.SalvarEmLoteAsync(lista);
+            return Ok();
+        }
+
+        [HttpPost("MarcarFlagSincronizadoEmLote")]
+        public async Task<IActionResult> MarcarFlagSincronizadoEmLoteAsync(IEnumerable<KeyValuePair<Guid, int>> lista)
+        {
+            await this._service.MarcarFlagSincronizadoEmLoteAsync(lista);
+            return Ok();
+        }
+
+        [HttpPost("DesmarcarFlagSincronizadoEmLote")]
+        public async Task<IActionResult> DesmarcarcarFlagSincronizadoEmLoteAsync(IEnumerable<Guid> lista)
+        {
+            await this._service.DesmarcarcarFlagSincronizadoEmLoteAsync(lista);
             return Ok();
         }
     }
