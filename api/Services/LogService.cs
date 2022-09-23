@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpha.Pesagem.Api.Services
 {
-  public class LogService : TenantDataService<Log>
+  public class LogService : DataService<Log>
   {
-    public LogService(AlphaDbContext context, Fazenda fazenda, IHttpContextAccessor httpContextAccessor) : base(context, fazenda, httpContextAccessor)
+    public LogService(AlphaDbContext context) : base(context)
     {
 
     }

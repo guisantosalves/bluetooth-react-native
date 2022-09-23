@@ -7,6 +7,7 @@ namespace Alpha.Pesagem.Api.Models
     {
         [Key]
         public Guid Id { get; set; }
+        public StatusSincronizado Sincronizado { get; set; }
     }
     public interface IDateLog
     {

@@ -3,15 +3,17 @@ using System;
 using Alpha.Pesagem.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Api.Pesagem.Migrations
 {
     [DbContext(typeof(AlphaDbContext))]
-    partial class AlphaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220923135900_T_AjustandoPesagem")]
+    partial class T_AjustandoPesagem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,37 +51,6 @@ namespace Api.Pesagem.Migrations
                     b.HasIndex("Id");
 
                     b.ToTable("Fazendas");
-                });
-
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("DataAlteracao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("FazendaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("IdAlphaExpress")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Mensagem")
-                        .HasColumnType("text");
-
-                    b.Property<short>("Sincronizado")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FazendaId");
-
-                    b.ToTable("Log");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>

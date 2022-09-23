@@ -45,9 +45,7 @@ namespace Api.Pesagem
                 options.UseNpgsql(Configuration.GetConnectionString("Default"));
             });
 
-            services.AddMultitenancy<Fazenda, CachingTenantResolver>();
             services.AddDataServices();
-            services.AddHttpContextAccessor();
             ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("pt-BR");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -121,9 +119,6 @@ namespace Api.Pesagem
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseMultitenancy<Fazenda>();
-
 
             app.UseEndpoints(endpoints =>
             {

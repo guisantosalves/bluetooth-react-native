@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Pesagem.Migrations
 {
     [DbContext(typeof(AlphaDbContext))]
-    [Migration("20220921192639_T_Iniciando")]
-    partial class T_Iniciando
+    [Migration("20220923152019_T_IncluindoLogs")]
+    partial class T_IncluindoLogs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,114 +43,14 @@ namespace Api.Pesagem.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Id");
 
                     b.ToTable("Fazendas");
-                });
-
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fornecedor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Apelido")
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<string>("Aviso")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Bairro")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
-
-                    b.Property<string>("Bloqueado")
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)");
-
-                    b.Property<string>("Celular")
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)");
-
-                    b.Property<string>("Cep")
-                        .HasMaxLength(9)
-                        .HasColumnType("character varying(9)");
-
-                    b.Property<int?>("CodigoIbgeCidade")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Complemento")
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<string>("Contato")
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
-                    b.Property<string>("Cpf")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("character varying(14)");
-
-                    b.Property<DateTime?>("DataAlteracao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Endereco")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<Guid>("FazendaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("IdAlphaExpress")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Inativo")
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)");
-
-                    b.Property<string>("NomeRazao")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<string>("Numero")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Observacao")
-                        .HasMaxLength(350)
-                        .HasColumnType("character varying(350)");
-
-                    b.Property<string>("Rg")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<short>("Sincronizado")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Telefone")
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)");
-
-                    b.Property<short>("TipoPessoa")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Vendedores")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FazendaId");
-
-                    b.ToTable("Fornecedor");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
@@ -173,6 +73,9 @@ namespace Api.Pesagem.Migrations
 
                     b.Property<string>("Mensagem")
                         .HasColumnType("text");
+
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
@@ -233,29 +136,46 @@ namespace Api.Pesagem.Migrations
                     b.ToTable("Peso");
                 });
 
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Fornecedor", b =>
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.RefreshToken", b =>
                 {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
-                        .WithMany()
-                        .HasForeignKey("FazendaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.Navigation("Fazenda");
-                });
+                    b.Property<DateTime?>("DataAlteracao")
+                        .HasColumnType("timestamp without time zone");
 
-            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
-                {
-                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
-                        .WithMany()
-                        .HasForeignKey("FazendaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Navigation("Fazenda");
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("Token")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FazendaId");
+
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
+                {
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
+                        .WithMany()
+                        .HasForeignKey("FazendaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Fazenda");
+                });
+
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.RefreshToken", b =>
                 {
                     b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
                         .WithMany()

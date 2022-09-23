@@ -4,19 +4,19 @@ using FluentValidation;
 
 namespace Alpha.Pesagem.Api.Validation
 {
-  public class LogSaveValidator : AbstractValidator<Log>
-  {
-    public LogSaveValidator()
+    public class LogSaveValidator : AbstractValidator<Log>
     {
-      RuleFor(q => q.IdAlphaExpress).NotNull();
-      RuleFor(q => q.Mensagem).MaximumLength(5000).NotNull();
+        public LogSaveValidator()
+        {
+            RuleFor(q => q.IdAlphaExpress).NotNull();
+            RuleFor(q => q.Mensagem).MaximumLength(5000).NotNull();
+        }
     }
-  }
-  public class LogSaveEmLoteValidator : AbstractValidator<IEnumerable<Log>>
-  {
-    public LogSaveEmLoteValidator()
+    public class LogSaveEmLoteValidator : AbstractValidator<IEnumerable<Log>>
     {
-      RuleForEach(q => q).SetValidator(new LogSaveValidator());
+        public LogSaveEmLoteValidator()
+        {
+            RuleForEach(q => q).SetValidator(new LogSaveValidator());
+        }
     }
-  }
 }

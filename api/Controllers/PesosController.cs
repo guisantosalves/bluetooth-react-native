@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alpha.Pesagem.Api.Controllers.BaseControllers;
 using Alpha.Pesagem.Api.Models;
 using Alpha.Pesagem.Api.Services;
 using Alpha.Pesagem.Api.Validation;
@@ -12,14 +11,16 @@ namespace Alpha.Pesagem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PesosController : TenantController<Peso>
+    public class PesosController : ControllerBase
     {
-        public PesosController(ITenantDataService<Peso> service, IHttpContextAccessor context) : base(service, context)
+        private IDataService<Peso> _service;
+        public PesosController(IDataService<Peso> service)
         {
+            _service = service;
         }
 
         [HttpPost("Salvar")]
-        public override async Task<IActionResult> SaveAsync([FromBody] Peso obj)
+        public virtual async Task<IActionResult> SaveAsync([FromBody] Peso obj)
         {
             var validator = new PesagemSaveValidator();
             var validationResult = await validator.ValidateAsync(obj);
@@ -29,11 +30,11 @@ namespace Alpha.Pesagem.Api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            return await base.SaveAsync(obj);
+            return Ok(await this._service.SalvarAsync(obj));
         }
 
         [HttpPost("Incluir")]
-        public override async Task<IActionResult> IncluirAsync([FromBody] Peso obj)
+        public virtual async Task<IActionResult> IncluirAsync([FromBody] Peso obj)
         {
             var validator = new PesagemSaveValidator();
             var validationResult = await validator.ValidateAsync(obj);
@@ -43,11 +44,11 @@ namespace Alpha.Pesagem.Api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            return await base.IncluirAsync(obj);
+            return Ok(await this._service.IncluirAsync(obj));
         }
 
         [HttpPut("Alterar/{id}")]
-        public override async Task<IActionResult> AlterarAsync([FromBody] Peso obj, Guid id)
+        public virtual async Task<IActionResult> AlterarAsync([FromBody] Peso obj, Guid id)
         {
             var validator = new PesagemSaveValidator();
             var validationResult = await validator.ValidateAsync(obj);
@@ -57,29 +58,46 @@ namespace Alpha.Pesagem.Api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            return await base.AlterarAsync(obj, id);
+            return Ok(await this._service.AlterarAsync(id, obj));
         }
 
         [HttpDelete("Remover/{id}")]
-        public override async Task<IActionResult> RemoverAsync(Guid id)
+        public virtual async Task<IActionResult> RemoverAsync(Guid id)
         {
-            return await base.RemoverAsync(id);
+            await this._service.RemoverAsync(id);
+            return Ok();
         }
 
         [HttpGet("ObterVarios")]
-        public override async Task<IActionResult> ObterVariosAsync()
+        public virtual async Task<IActionResult> ObterVariosAsync()
         {
-            return await base.ObterVariosAsync();
+            return Ok(await this._service.ObterVariosAsync());
+        }
+
+        [HttpPost("ObterRegistrosComparados")]
+        public virtual async Task<IActionResult> ObterRegistrosComparadosAsync([FromBody] List<ModelComparacaoViewModel> comparacao, [FromQuery] int? diasAnteriores)
+        {
+            var lista = await this._service.ObterRegistrosComparadosAsync(comparacao, diasAnteriores);
+
+            return Ok(lista);
+        }
+
+        [HttpPost("ObterRegistrosRemovidos")]
+        public virtual async Task<IActionResult> ObterRegistrosRemovidosAsync(List<Guid> registros)
+        {
+            var lista = await this._service.ObterRegistrosRemovidosAsync(registros);
+
+            return Ok(lista);
         }
 
         [HttpGet("ObterUm/{id}")]
-        public override async Task<IActionResult> ObterUmAsync(Guid id)
+        public virtual async Task<IActionResult> ObterUmAsync(Guid id)
         {
-            return await base.ObterUmAsync(id);
+            return Ok(await this._service.ObterUmAsync(id));
         }
 
         [HttpPost("SalvarEmLoteAlphaExpress")]
-        public override async Task<IActionResult> SalvarEmLoteAlphaExpressAsync([FromBody] IEnumerable<Peso> lista)
+        public virtual async Task<IActionResult> SalvarEmLoteAlphaExpressAsync([FromBody] IEnumerable<Peso> lista)
         {
             var validator = new PesagemSaveEmLoteValidator();
             var validationResult = await validator.ValidateAsync(lista);
@@ -88,12 +106,12 @@ namespace Alpha.Pesagem.Api.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-
-            return await base.SalvarEmLoteAlphaExpressAsync(lista);
+            await this._service.SalvarEmLoteAlphaExpressAsync(lista);
+            return Ok();
         }
 
         [HttpPost("SalvarEmLote")]
-        public override async Task<IActionResult> SalvarEmLoteAsync([FromBody] IEnumerable<Peso> lista)
+        public virtual async Task<IActionResult> SalvarEmLoteAsync([FromBody] IEnumerable<Peso> lista)
         {
             var validator = new PesagemSaveEmLoteValidator();
             var validationResult = await validator.ValidateAsync(lista);
@@ -102,27 +120,22 @@ namespace Alpha.Pesagem.Api.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-
-            return await base.SalvarEmLoteAsync(lista);
+            await this._service.SalvarEmLoteAsync(lista);
+            return Ok();
         }
 
         [HttpPost("MarcarFlagSincronizadoEmLote")]
         public async Task<IActionResult> MarcarFlagSincronizadoEmLoteAsync(IEnumerable<KeyValuePair<Guid, int>> lista)
         {
-            await (this._service as PesoService).MarcarFlagSincronizadoEmLoteAsync(lista);
+            await this._service.MarcarFlagSincronizadoEmLoteAsync(lista);
             return Ok();
         }
 
         [HttpPost("DesmarcarFlagSincronizadoEmLote")]
         public async Task<IActionResult> DesmarcarcarFlagSincronizadoEmLoteAsync(IEnumerable<Guid> lista)
         {
-            await (this._service as PesoService).DesmarcarcarFlagSincronizadoEmLoteAsync(lista);
+            await this._service.DesmarcarcarFlagSincronizadoEmLoteAsync(lista);
             return Ok();
-        }
-        [HttpGet("ConsultarHistorico/{dataInicial}/{dataFinal}")]
-        public async Task<IActionResult> ConsultarHistoricoAsync(DateTime dataInicial, DateTime dataFinal)
-        {
-            return Ok(await (this._service as PesoService).ConsultarHistoricoAsync(dataInicial, dataFinal));
         }
     }
 }
