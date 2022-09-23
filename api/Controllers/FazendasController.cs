@@ -102,5 +102,12 @@ namespace Alpha.Pesagem.Api.Controllers
             await this._service.MarcarFlagSincronizadoEmLoteAsync(lista);
             return Ok();
         }
+
+        [HttpPost("DesmarcarFlagSincronizadoEmLote")]
+        public async Task<IActionResult> DesmarcarcarFlagSincronizadoEmLoteAsync(IEnumerable<Guid> lista)
+        {
+            await this._service.DesmarcarcarFlagSincronizadoEmLoteAsync(lista);
+            return Ok();
+        }
     }
 }

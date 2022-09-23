@@ -192,10 +192,36 @@ namespace Alpha.Pesagem.Api.Services
                     foreach (var item in lista)
                     {
                         var fazenda = await this.Query().Where(q => q.Id == item.Key).FirstOrDefaultAsync();
-                        // fazenda.Sincronizado = FornecedorStatusSincronizado.CadastradoAlpha;
+                        fazenda.Sincronizado = StatusSincronizado.Sim;
                         fazenda.IdAlphaExpress = item.Value;
 
                         this._context.Update(fazenda);
+                        await this._context.SaveChangesAsync();
+                    }
+
+                    await ts.CommitAsync();
+                }
+                catch (System.Exception)
+                {
+                    ts.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task DesmarcarcarFlagSincronizadoEmLoteAsync(IEnumerable<Guid> lista)
+        {
+            using (var ts = await this._context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach (var id in lista)
+                    {
+                        var compra = await this.Query().Where(q => q.Id == id).FirstOrDefaultAsync();
+                        compra.Sincronizado = StatusSincronizado.Nao;
+                        compra.IdAlphaExpress = 0;
+
+                        this._context.Update(compra);
                         await this._context.SaveChangesAsync();
                     }
 
