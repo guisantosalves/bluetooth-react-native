@@ -64,16 +64,6 @@ namespace Alpha.Pesagem.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // public async Task<Guid> IncluirAsync(Fazenda novaFazenda)
-        // {
-        //     novaFazenda.Inativo = FazendaInativa.Ativo;
-
-        //     await this._context.Fazendas.AddAsync(novaFazenda);
-        //     await this._context.SaveChangesAsync();
-
-        //     return novaFazenda.Id;
-        // }
-
         public async Task<Guid> GerarRefreshTokenAsync(Fazenda fazenda)
         {
             var refreshToken = await this._context
@@ -142,19 +132,6 @@ namespace Alpha.Pesagem.Api.Services
 
             return principal;
         }
-
-        // public async Task RemoverAsync(Guid id)
-        // {
-        //     var fazenda = await this._context.Set<Fazenda>().SingleOrDefaultAsync(q => q.Id == id);
-
-        //     if (fazenda == null)
-        //     {
-        //         throw new AlphaBadRequestException("Fazenda não encontrada para a exclusão");
-        //     }
-
-        //     this._context.Set<Fazenda>().Remove(fazenda);
-        //     await this._context.SaveChangesAsync();
-        // }  
 
     }
 

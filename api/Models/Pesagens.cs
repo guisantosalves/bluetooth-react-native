@@ -7,7 +7,7 @@ namespace Alpha.Pesagem.Api.Models
         public string Brinco { get; set; }
         public string BrincoEletronico { get; set; }
         public string PesoTotal { get; set; }
-        public int FazendaId { get; set; }
+        public Guid FazendaId { get; set; }
         public Fazenda Fazenda { get; set; }
         public string Idade { get; set; }
         public string Raca { get; set; }
