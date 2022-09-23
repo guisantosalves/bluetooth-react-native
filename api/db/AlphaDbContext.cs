@@ -61,7 +61,6 @@ namespace Alpha.Pesagem.Api.Data
 
       modelBuilder.ApplyConfiguration(new FazendaModelConfiguration());
       modelBuilder.ApplyConfiguration(new RefreshTokenModelConfiguration());
-      // modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
       modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
       modelBuilder.ApplyConfiguration(new LogModelConfiguration());
 
