@@ -5,21 +5,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Alpha.Pesagem.Api.Models
 {
-  public class Fazenda : EntidadeBase, IAlphaExpressRef, IDateLog
-  {
-    [StringLength(60, ErrorMessage = "{0} deve ter no máximo {1} caracteres")]
-    public string Nome { get; set; }
+    public class Fazenda : EntidadeBase, IAlphaExpressRef, IDateLog
+    {
+        [StringLength(60, ErrorMessage = "{0} deve ter no máximo {1} caracteres")]
+        public string Nome { get; set; }
+        public FazendaInativa Inativo { get; set; }
+        public int? IdAlphaExpress { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime? DataAlteracao { get; set; }
+    }
 
-    public FazendaInativa Inativo { get; set; }
-
-    public int? IdAlphaExpress { get; set; }
-
-    public DateTime DataCriacao { get; set; }
-
-    public DateTime? DataAlteracao { get; set; }
-  }
-
-  public enum FazendaInativa : Int16
+    public enum FazendaInativa : Int16
     {
         Ativo,
         Inativo
