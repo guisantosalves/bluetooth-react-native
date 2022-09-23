@@ -62,13 +62,15 @@ namespace Alpha.Pesagem.Api.Data
       modelBuilder.ApplyConfiguration(new FazendaModelConfiguration());
       modelBuilder.ApplyConfiguration(new RefreshTokenModelConfiguration());
       // modelBuilder.ApplyConfiguration(new FornecedorModelConfiguration());
-      // modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
-      // modelBuilder.ApplyConfiguration(new LogModelConfiguration());
+      modelBuilder.ApplyConfiguration(new PesoModelConfiguration());
+      modelBuilder.ApplyConfiguration(new LogModelConfiguration());
 
       // Criação de índices
       
       modelBuilder.Entity<Fazenda>().HasIndex(em => em.Id);
       modelBuilder.Entity<RefreshToken>().HasIndex(em => em.FazendaId);
+      modelBuilder.Entity<Peso>().HasIndex(em => em.FazendaId);
+      modelBuilder.Entity<Log>().HasIndex(em => em.FazendaId);
     }
   }
 }

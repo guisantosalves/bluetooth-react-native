@@ -74,6 +74,22 @@ namespace Alpha.Pesagem.Api.Controllers
             return Ok(await this._service.ObterVariosAsync());
         }
 
+        [HttpPost("ObterRegistrosComparados")]
+        public virtual async Task<IActionResult> ObterRegistrosComparadosAsync([FromBody] List<ModelComparacaoViewModel> comparacao, [FromQuery] int? diasAnteriores)
+        {
+            var lista = await this._service.ObterRegistrosComparadosAsync(comparacao, diasAnteriores);
+
+            return Ok(lista);
+        }
+
+        [HttpPost("ObterRegistrosRemovidos")]
+        public virtual async Task<IActionResult> ObterRegistrosRemovidosAsync(List<Guid> registros)
+        {
+            var lista = await this._service.ObterRegistrosRemovidosAsync(registros);
+
+            return Ok(lista);
+        }
+
         [HttpGet("ObterUm/{id}")]
         public virtual async Task<IActionResult> ObterUmAsync(Guid id)
         {
