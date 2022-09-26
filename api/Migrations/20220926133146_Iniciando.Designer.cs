@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Pesagem.Migrations
 {
     [DbContext(typeof(AlphaDbContext))]
-    [Migration("20220923133935_T_IncluindoPesagem")]
-    partial class T_IncluindoPesagem
+    [Migration("20220926133146_Iniciando")]
+    partial class Iniciando
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,89 @@ namespace Api.Pesagem.Migrations
                     b.ToTable("Fazendas");
                 });
 
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Log", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DataAlteracao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("IdAlphaExpress")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Mensagem")
+                        .HasColumnType("text");
+
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FazendaId");
+
+                    b.ToTable("Log");
+                });
+
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Brinco")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BrincoEletronico")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DataAlteracao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("IdAlphaExpress")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Idade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PesoTotal")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Raca")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sexo")
+                        .HasColumnType("text");
+
+                    b.Property<short>("Sincronizado")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ValorMedio")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FazendaId");
+
+                    b.ToTable("Peso");
+                });
+
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -79,6 +162,17 @@ namespace Api.Pesagem.Migrations
                     b.HasIndex("FazendaId");
 
                     b.ToTable("RefreshToken");
+                });
+
+            modelBuilder.Entity("Alpha.Pesagem.Api.Models.Peso", b =>
+                {
+                    b.HasOne("Alpha.Pesagem.Api.Models.Fazenda", "Fazenda")
+                        .WithMany()
+                        .HasForeignKey("FazendaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Fazenda");
                 });
 
             modelBuilder.Entity("Alpha.Pesagem.Api.Models.RefreshToken", b =>
