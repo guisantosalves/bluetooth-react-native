@@ -10,7 +10,12 @@
       "ProjectGuid": "ff4e08ea-0d3d-4329-961b-0e2342cf0ae6",
       "DisplayName": "Api.Pesagem",
       "ColorIndex": 1
+    },
+    "13a4d6bd-69d7-4410-b0ba-b0350c8bf491": {
+      "ProjectGuid": "13a4d6bd-69d7-4410-b0ba-b0350c8bf491",
+      "DisplayName": "Api.Pesagem",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 3
 }

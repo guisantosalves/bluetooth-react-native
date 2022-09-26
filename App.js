@@ -12,6 +12,7 @@ import Login from './screens/Login';
 import Cadastro from './screens/Cadastro';
 import RequestPermissionUser from './screens/ResquestPermission';
 import User from './screens/User';
+import Splash from './screens/Splash';
 
 //redux
 import { Provider } from 'react-redux';
@@ -24,16 +25,17 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        
-        <Stack.Navigator initialRouteName={'Home'} screenOptions={{
+
+        <Stack.Navigator initialRouteName={'Splash'} screenOptions={{
           headerShown: false,
         }}>
-          <Stack.Screen name="Request" component={RequestPermissionUser}/>
+          <Stack.Screen name="Request" component={RequestPermissionUser} />
           <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Instructions" component={Instructions}/>
-          <Stack.Screen name="Login" component={Login}/>
-          <Stack.Screen name="Cadastro" component={Cadastro}/>
-          <Stack.Screen name="User" component={User}/>
+          <Stack.Screen name="Instructions" component={Instructions} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Splash" component={Splash} />
+          <Stack.Screen name="Cadastro" component={Cadastro} />
+          <Stack.Screen name="User" component={User} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
