@@ -26,7 +26,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer>
 
-        <Stack.Navigator initialRouteName={'Splash'} screenOptions={{
+        <Stack.Navigator initialRouteName={'Login'} screenOptions={{
           headerShown: false,
         }}>
           <Stack.Screen name="Request" component={RequestPermissionUser} />

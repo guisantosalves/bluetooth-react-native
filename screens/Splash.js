@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, SafeAreaView, StyleSheet } from 'react-native';
 
-export default function Splash({ navigation }) {
+export default function Splash({ navigation, setOpen }) {
   const animationProgress = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -10,7 +10,7 @@ export default function Splash({ navigation }) {
       duration: 5000,
       useNativeDriver: true
     }).start(() => {
-      navigation.push('Login')
+      setOpen(false)
     })
   }, [])
 
