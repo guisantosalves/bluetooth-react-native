@@ -29,26 +29,29 @@ export default function ({ navigation }) {
             setOpenModal(true)
             setWidth(0)
             await AsyncStorage.setItem('fazenda', JSON.stringify({ id: id, nome: 'Fazenda Feliz' }))
-            setFazendaLogada({ id: id, nome: 'Fazenda Feliz' })
 
             const objetToInsert = {
-                fazenda: null,
-                brinco: earing,
-                brincoEletronico: eletronicEaring,
-                peso: parseFloat(correctString),
-                idade: parseInt(age),
-                raca: parseInt(race),
-                valorMedio: parseFloat(chagingCommom),
-                sexo: parseInt(sex),
+                fazenda: id,
+                brinco: '0123456789',
+                brincoEletronico: '0123456789',
+                peso: 200.0,
+                idade: 1,
+                raca: 2,
+                valorMedio: 2000,
+                sexo: 1,
             }
             console.log(objetToInsert)
 
             const jsonValue = JSON.stringify(objetToInsert)
 
             await AsyncStorage.setItem(`${uuid.v4()}`, jsonValue)
+
+            setFazendaLogada({ id: id, nome: 'Fazenda Feliz' })
         } catch (error) {
             alert(error)
-        } finally { () => setTimeout(() => setOpenModal(false), 5000) }
+        } finally {
+            setTimeout(() => setOpenModal(false), 5000)
+        }
     }
 
     useFocusEffect(useCallback(() => {

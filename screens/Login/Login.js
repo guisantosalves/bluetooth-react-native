@@ -43,10 +43,10 @@ export default function Login({ onSubmit, fazendas }) {
                         </View>
                         <View style={{ width: '100%', marginTop: 10 }}>
                             <TouchableOpacity
-                                style={[styles.marginVertical10, styles.marginBottom30, { backgroundColor: '#3BB54A', padding: 10, borderRadius: 10, justifyContent: 'center', alignContent: 'center' }]}
+                                style={[styles.marginVertical10, styles.marginBottom30, { color: '#FFFFFF', backgroundColor: '#00CEB0', padding: 10, borderRadius: 10, justifyContent: 'center', alignContent: 'center' }]}
                                 onPress={() => onSubmit(id)}
                             >
-                                <Text style={{ color: 'wigth', textAlign: 'center', fontWeight: 'bold' }}>ENTRAR</Text>
+                                <Text style={{ color: '#FFFFFF', textAlign: 'center', fontWeight: 'bold' }}>ENTRAR</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

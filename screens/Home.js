@@ -5,6 +5,7 @@ import { FloatingAction } from 'react-native-floating-action';
 import * as RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import IconIonicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 
 // icons
@@ -34,8 +35,13 @@ const Home = ({ navigation }) => {
       icon: <Icon name="comments-o" size={25} color={'#E9FFF9'} />,
       name: "instrucao",
       position: 3
+    },
+    {
+      text: "sair",
+      icon: <IconIonicons name="md-exit-outline" size={25} color={'#E9FFF9'} />,
+      name: "sair",
+      position: 3
     }
-
   ]
 
   const gettingItem = async () => {
@@ -144,6 +150,17 @@ const Home = ({ navigation }) => {
 
   }
 
+  const remove = async () => {
+    try {
+      console.log('Aqui')
+      await AsyncStorage.removeItem('fazenda')
+    } catch (error) {
+      alert('Ocorreu um erro ao remover credenciais!')
+    } finally {
+      navigation.push("Login")
+    }
+  }
+
   const sync = async () => {
     try {
       if (dataToDisplayFromAS.length > 0) {
@@ -152,7 +169,7 @@ const Home = ({ navigation }) => {
         fetch()
       }
     } catch (error) {
-      
+
     }
   }
 
@@ -207,6 +224,8 @@ const Home = ({ navigation }) => {
               navigation.push("Cadastro")
             } else if (item === "instrucao") {
               navigation.push("Instructions")
+            } else if (item === "sair") {
+              remove()
             }
           }}
         />
