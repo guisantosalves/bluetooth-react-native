@@ -10,17 +10,7 @@
       "ProjectGuid": "ff4e08ea-0d3d-4329-961b-0e2342cf0ae6",
       "DisplayName": "Api.Pesagem",
       "ColorIndex": 1
-    },
-    "13a4d6bd-69d7-4410-b0ba-b0350c8bf491": {
-      "ProjectGuid": "13a4d6bd-69d7-4410-b0ba-b0350c8bf491",
-      "DisplayName": "Api.Pesagem",
-      "ColorIndex": 2
-    },
-    "bf0897b6-662b-4c90-958e-81584987a8a8": {
-      "ProjectGuid": "bf0897b6-662b-4c90-958e-81584987a8a8",
-      "DisplayName": "Api.Pesagem",
-      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 4
+  "NextColorIndex": 2
 }
