@@ -56,7 +56,7 @@ const Home = ({ navigation }) => {
           }
         })
       } else {
-        alert("nao deu")
+        alert("Falha ao buscar dados do AsyncStorage")
       }
     } catch (e) {
       alert(e)

@@ -2,47 +2,27 @@ import * as React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const RadioButton = ({getValue}) => {
+const RadioButton = ({ array, onSelected }) => {
+    const [optSelected, setOptSelected] = React.useState(null);
+    const selectHandler = (value) => {
+        setOptSelected(value)
+        onSelected(value)
+    }
 
-    const [isPressedOne, setisPressedOne] = React.useState(false)
-    const [isPressedTwo, setisPressedTwo] = React.useState(false)
-    
-
-    const dataToSend = [
-        {
-            id: 1,
-            value: 'Macho'
-        },
-        {
-            id: 2,
-            value: 'Femea'
-        }
-    ]
-
-    // setting using setState (//oldValues => tratingOldValueAndSettingn)
-    return(
-        <>
-            <TouchableOpacity 
-            style={ isPressedOne ? style.pressedButton : style.defaulButton } 
-            onPress={() => {
-                    setisPressedTwo(oldValueFromState => oldValueFromState = false)
-                    setisPressedOne(oldValueFromState => oldValueFromState = true)
-                    getValue(dataToSend[0].id)
-                }}>
-                <Text style={isPressedOne ? style.textFromPressedButton : style.textDefault}>Macho</Text>
-                <Icon name='male' size={20} color={ '#424242'}/>
-            </TouchableOpacity>
-            <TouchableOpacity 
-            style={isPressedTwo ? style.pressedButton : style.defaulButton} 
-            onPress={()=>{
-                    setisPressedTwo(oldValueFromState => oldValueFromState = true)
-                    setisPressedOne(oldValueFromState => oldValueFromState = false)
-                    getValue(dataToSend[1].id)
-                }}>
-                <Text style={isPressedTwo ? style.textFromPressedButton : style.textDefault}>Fêmea</Text>
-                <Icon name='female' size={20} color={'#424242'}/>
-            </TouchableOpacity>
-        </>
+    return (
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+            {array.map((opt) => {
+                return (
+                    <View style={{ padding: 5 }}>
+                        <TouchableOpacity
+                            style={optSelected === opt.id ? style.pressedButton : style.defaulButton}
+                            onPress={() => selectHandler(opt.id)}>
+                            <Text style={optSelected === opt.id ? style.textFromPressedButton : style.textDefault}>{opt.value}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            })}
+        </View >
     )
 }
 
@@ -63,7 +43,7 @@ const style = StyleSheet.create({
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 999  
+        borderRadius: 999
     },
     textFromPressedButton: {
         color: '#424242',

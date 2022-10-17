@@ -9,7 +9,7 @@ import Splash from '../Splash';
 import Login from './Login';
 
 export default function ({ navigation }) {
-    const [fazendas, setFazendas] = useState([{ nome: 'Witillan', key: 1 }, { nome: 'Langa', key: 2 }])
+    const [fazendas, setFazendas] = useState([{ nome: 'Taboca', key: 1 }, { nome: 'Sao Jose', key: 2 }])
     const [fazendaLogada, setFazendaLogada] = useState(null)
     const [openSplashScreen, setOpenSplashScreen] = useState(true)
     const [openModal, setOpenModal] = useState(false)
