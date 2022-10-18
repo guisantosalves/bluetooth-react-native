@@ -157,7 +157,7 @@ const InputOptions = ({ peso, devices }) => {
                         </View>
                         <View style={style.inputStyle}>
                             {peso ? <TextInput ref={weightRef} value={values.peso} onFocus={() => { setFieldValue('peso', peso), getFocusInputEaring() }} onChangeText={handleChange('peso')} numberOfLines={2} keyboardType="none" />
-                            : <TextInput ref={weightRef} value={values.peso} onChangeText={() => { handleChange('peso')}} numberOfLines={2} keyboardType="numeric" />}
+                            : <TextInput ref={weightRef} value={values.peso} onChangeText={(p) => { setFieldValue('peso', p)}} numberOfLines={2} keyboardType="numeric" />}
                         </View>
                         {errors.peso && touched.peso ? (
                             <Text style={style.textRequired}>{errors.peso}</Text>
