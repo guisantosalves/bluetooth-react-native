@@ -28,7 +28,7 @@ export default function ({ navigation }) {
         try {
             setOpenModal(true)
             setWidth(0)
-            await AsyncStorage.setItem('fazenda', JSON.stringify({ id: id, nome: 'Fazenda Feliz' }))
+            await AsyncStorage.setItem('fazenda', JSON.stringify(fazendaLogada))
 
             const objetToInsert = {
                 fazenda: id,
@@ -46,7 +46,6 @@ export default function ({ navigation }) {
 
             await AsyncStorage.setItem(`${uuid.v4()}`, jsonValue)
 
-            setFazendaLogada({ id: id, nome: 'Fazenda Feliz' })
         } catch (error) {
             alert(error)
         } finally {
@@ -75,7 +74,11 @@ export default function ({ navigation }) {
 
     const onSubmit = async (id) => {
         console.log(id)
-        if (!id) return alert('Você precisa selecionar uma fazenda!')
+        if (!id){
+            return alert('Você precisa selecionar uma fazenda!')
+        } else {
+            setFazendaLogada(fazendas.find((q)=>q.key = id))
+        }
 
         await carregando(id)
     }
