@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     requestResult: null,
-    requestDevice: [],
+    requestDevice: "",
 }
 
 export const appSlice = createSlice({
