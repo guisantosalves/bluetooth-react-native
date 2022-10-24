@@ -1,7 +1,7 @@
 param(
     $createConnString = 0,
-    $createToken = 0,
-    $createApiUrl = 0
+    $createToken = 1,
+    $createApiUrl = 1
 )
 
 # Objeto principal - appSettings

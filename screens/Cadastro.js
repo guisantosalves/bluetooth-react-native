@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Buffer } from 'buffer';
 import React, { useEffect, useState } from 'react';
-import { Alert, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import base64 from 'react-native-base64';
 import { BleManager, NativeDevice, Service } from 'react-native-ble-plx';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,13 +12,14 @@ import InputOptions from '../components/InputOptions';
 
 // icons
 // components
-const Cadastro = ({navigation}) => {
+const Cadastro = ({ navigation }) => {
 
   const manager = new BleManager();
   const serv = new Service(NativeDevice, manager)
 
   // States Of The Application
   const [Weightt, setWeightt] = useState()
+  const [modalVisible, setModalVisible] = useState(true)
 
   const [dataFromASstate, setdataFromASstate] = useState()
   const [stopScan, setstopScan] = useState(false)
@@ -35,7 +36,7 @@ const Cadastro = ({navigation}) => {
 
   // using redux
   const dispatch = useDispatch();
-  const deviceOnStore = useSelector((state)=>state.counter.requestDevice)
+  const deviceOnStore = useSelector((state) => state.counter.requestDevice)
   const [deviceConnectedInStore, setdeviceConnectedInStore] = useState()
 
   // setting data to the weight works
@@ -47,12 +48,12 @@ const Cadastro = ({navigation}) => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-          title: 'permissão de localização para o bluetooth scanning',
-          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
-          buttonNeutral: 'Perguntar depois',
-          buttonNegative: 'Cancelar',
-          buttonPositive: 'OK',
-        },
+        title: 'permissão de localização para o bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission for bluetooth scanning granted');
@@ -66,18 +67,18 @@ const Cadastro = ({navigation}) => {
       console.log(err);
       return false;
     }
-}
+  }
 
-const requestBLUETOOTH_ADMINPermission = async () => {
+  const requestBLUETOOTH_ADMINPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT, {
-          title: 'Location permission for bluetooth scanning',
-          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
-          buttonNeutral: 'Perguntar depois',
-          buttonNegative: 'Cancelar',
-          buttonPositive: 'OK',
-        },
+        title: 'Location permission for bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission for bluetooth scanning granted');
@@ -91,102 +92,102 @@ const requestBLUETOOTH_ADMINPermission = async () => {
       console.log(err);
       return false;
     }
-}
+  }
 
-const BLUETOOTH_ADVERTISErequestPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+  const BLUETOOTH_ADVERTISErequestPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
         title: 'Location permission for bluetooth scanning',
         message: 'Nós precisamos dessa permissão para rodar o bluetooth',
         buttonNeutral: 'Perguntar depois',
         buttonNegative: 'Cancelar',
         buttonPositive: 'OK',
       },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Location permission for bluetooth scanning granted');
-      return true;
-    } else {
-      console.log('Location permission for bluetooth scanning revoked');
-      console.log("AQUICORNO 4")
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission for bluetooth scanning granted');
+        return true;
+      } else {
+        console.log('Location permission for bluetooth scanning revoked');
+        console.log("AQUICORNO 4")
+        return false;
+
+      }
+    } catch (err) {
+      console.log(err);
       return false;
-
     }
-  } catch (err) {
-    console.log(err);
-    return false;
   }
-}
 
-const WriteAndReadDataRequestPermission = async () => {
-  try{
-    const multipleRequest = await PermissionsAndroid.requestMultiple([
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    ]);
-  }catch(err){
-    alert(err)
-  }
-  const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-  const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+  const WriteAndReadDataRequestPermission = async () => {
+    try {
+      const multipleRequest = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ]);
+    } catch (err) {
+      alert(err)
+    }
+    const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
 
-  // if writeGranted doesn't exist
-  if(!writeGranted || writeGranted == false|| !readGranted){
-    alert("não podemos escrever no seu dispositivo.")
-    return;
+    // if writeGranted doesn't exist
+    if (!writeGranted || writeGranted == false || !readGranted) {
+      alert("não podemos escrever no seu dispositivo.")
+      return;
+    }
   }
-}
 
   // pega características de algo ja pareado
   const getData = (theBalance) => {
 
-    theBalance[1].connect().then((balance)=>{
+    theBalance[1].connect().then((balance) => {
 
       return balance.discoverAllServicesAndCharacteristics();
 
     })
-    .then((data)=>{
-      return data
-    })
-    .then((dataComplet)=>{
+      .then((data) => {
+        return data
+      })
+      .then((dataComplet) => {
 
-      let base64Stringg = Buffer.from("{RW}").toString('base64')
-      dataComplet.writeCharacteristicWithResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
-      .then((result)=>{
+        let base64Stringg = Buffer.from("{RW}").toString('base64')
+        dataComplet.writeCharacteristicWithResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
+          .then((result) => {
 
-        return result
+            return result
 
-      }).then(()=>{
+          }).then(() => {
 
-        dataComplet.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha)=>{
-            console.log(err)
-            try{
-              let weight_transformed = base64.decode(cha.value)
-              setgettingWeight(weight_transformed)
-              return
-            }catch(err){
-              console.log("error", err)
-            }
+            dataComplet.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha) => {
+              console.log(err)
+              try {
+                let weight_transformed = base64.decode(cha.value)
+                setgettingWeight(weight_transformed)
+                return
+              } catch (err) {
+                console.log("error", err)
+              }
 
-          })
+            })
 
-      }).catch((errr)=>{
+          }).catch((errr) => {
 
-        console.log("error", errr)
+            console.log("error", errr)
 
-      });
+          });
 
-    })
-    .catch(err=>{
+      })
+      .catch(err => {
 
-      console.log("error", err)
+        console.log("error", err)
 
-    }).finally(()=>{
+      }).finally(() => {
 
-      alert(gettingWeight)
+        alert(gettingWeight)
 
-    })
+      })
 
   }
 
@@ -203,34 +204,34 @@ const WriteAndReadDataRequestPermission = async () => {
   // ou colocar no asyncStorage, já funciona
   const ScanAndConnect = async () => {
 
-    
+
     permissions()
-    
-    manager.startDeviceScan(null, {allowDuplicates: false}, (error, listOfDevices) => {
 
-        if(error){
+    manager.startDeviceScan(null, { allowDuplicates: false }, (error, listOfDevices) => {
 
-          // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
-          alert(error)
+      if (error) {
 
-          return
-        }
+        // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
+        alert(error)
 
-        if(listOfDevices.id == "C7:C6:8B:C9:9F:2D"){
-                    
-          setDevices(oldArray=>[...oldArray, listOfDevices])
-          console.log(devices)
-          manager.stopDeviceScan()
-        }
+        return
+      }
 
-        // espera terminar todo o scan e espera 1 sec pra dar o stop
+      if (listOfDevices.id == "C7:C6:8B:C9:9F:2D") {
+
+        setDevices(oldArray => [...oldArray, listOfDevices])
+        console.log(devices)
+        manager.stopDeviceScan()
+      }
+
+      // espera terminar todo o scan e espera 1 sec pra dar o stop
       //  setTimeout(()=>{
       //   manager.stopDeviceScan()
       //   setIsScanFinished(true)
       //   console.log("finished scanning")
       // }, 1000)
-      });
-    
+    });
+
 
   }
 
@@ -238,26 +239,26 @@ const WriteAndReadDataRequestPermission = async () => {
 
     const subscription = manager.onStateChange((state) => {
 
-        if(state === 'PoweredOn'){
+      if (state === 'PoweredOn') {
 
-          // ScanAndConnect()
-          console.log("Bluetooth ligado")
+        // ScanAndConnect()
+        console.log("Bluetooth ligado")
 
-        }else{
+      } else {
 
-          Alert.alert("Bluetooth desligado", "Você precisa ligar o bluetooth e conectar na balança", [
-            {
-              text: "Cancelar",
-              onPress: () => console.log("apertou cancelar"),
-              style: "cancel"
-            },
-            {
-              text: "ok",
-              onPress: () => console.log("apertou ok"),
-            }
-          ])
+        Alert.alert("Bluetooth desligado", "Você precisa ligar o bluetooth e conectar na balança", [
+          {
+            text: "Cancelar",
+            onPress: () => console.log("apertou cancelar"),
+            style: "cancel"
+          },
+          {
+            text: "ok",
+            onPress: () => console.log("apertou ok"),
+          }
+        ])
 
-        }
+      }
 
     }, true);
 
@@ -281,20 +282,20 @@ const WriteAndReadDataRequestPermission = async () => {
 
 
   const getFileOfEarings = () => {
-    manager.startDeviceScan(null, {allowDuplicates: false}, (err, listOfDevice) => {
+    manager.startDeviceScan(null, { allowDuplicates: false }, (err, listOfDevice) => {
 
-      if(err){
+      if (err) {
         alert(err)
         return
       }
 
-      if(listOfDevice){
+      if (listOfDevice) {
         console.log(listOfDevice)
 
       }
 
     })
-    setTimeout(()=>{
+    setTimeout(() => {
       manager.stopDeviceScan()
       setIsScanFinished(true)
       console.log("finished scanning")
@@ -304,73 +305,74 @@ const WriteAndReadDataRequestPermission = async () => {
 
   const getTheCurrentWeight = () => {
     // ScanAndConnect()
-    if(devices.length > 0){
+    if (devices.length > 0) {
 
       devices[0]
-      .connect()
-      .then((deviceConnected)=>{
+        .connect()
+        .then((deviceConnected) => {
 
-        return deviceConnected.discoverAllServicesAndCharacteristics()
-
-      })
-      .then((data)=>{
-
-        let base64Stringg = Buffer.from("{RW}").toString('base64')
-
-        data.writeCharacteristicWithoutResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
-        .then((oldCharacterist)=>{
-
-          data.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha)=>{
-
-            try{
-
-              let weightTransformed = base64.decode(cha.value)
-                let weightString = weightTransformed.replace('[', '');
-                let peso = weightString.replace(']', '');
-
-              console.log(peso)
-              Alert.alert("Peso", `Importar o peso: ${peso}`, [
-                {
-                  text: "Errado",
-                  onPress: () => console.log("apertou cancelar"),
-                  style: "cancel"
-                },
-                {
-                  text: "Correto",
-                  onPress: () => setWeightt(peso),
-                }
-              ])
-
-            }catch(err){
-
-              if(err){
-                console.log("error", err)
-              }
-
-            }
-
-          })
+          return deviceConnected.discoverAllServicesAndCharacteristics()
 
         })
+        .then((data) => {
+
+          let base64Stringg = Buffer.from("{RW}").toString('base64')
+
+          data.writeCharacteristicWithoutResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
+            .then((oldCharacterist) => {
+
+              data.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha) => {
+
+                try {
+
+                  let weightTransformed = base64.decode(cha.value)
+                  let weightString = weightTransformed.replace('[', '');
+                  let peso = weightString.replace(']', '');
+
+                  console.log(peso)
+                  Alert.alert("Peso", `Importar o peso: ${peso}`, [
+                    {
+                      text: "Errado",
+                      onPress: () => console.log("apertou cancelar"),
+                      style: "cancel"
+                    },
+                    {
+                      text: "Correto",
+                      onPress: () => setWeightt(peso),
+                    }
+                  ])
+
+                } catch (err) {
+
+                  if (err) {
+                    console.log("error", err)
+                  }
+
+                }
+
+              })
+
+            })
 
 
-      })
-      .catch((err)=>{
+        })
+        .catch((err) => {
 
-        alert(err)
-        getTheCurrentWeight()
-      })
-      .finally(()=>{})
+          alert(err)
+          getTheCurrentWeight()
+        })
+        .finally(() => { })
 
-      devices[0].onDisconnected((err, dev)=>{
+      devices[0].onDisconnected((err, dev) => {
         console.log(dev)
       })
 
-    }else{
-      console.log(devices)
+    } else {
+      Alert.alert(`Existem ${devices.length} aparelhos conectados no momento.`,
+      `Conecte um aparelho ou siga com a pesagem manualmente.`)
     }
 
-    
+
 
   }
 
@@ -382,7 +384,7 @@ const WriteAndReadDataRequestPermission = async () => {
   const action = [
     {
       text: "Home",
-      icon: <Icon name="home" size={30} color={'#E9FFF9'}/>,
+      icon: <Icon name="home" size={30} color={'#E9FFF9'} />,
       name: "home",
       position: 1
     },
@@ -391,61 +393,66 @@ const WriteAndReadDataRequestPermission = async () => {
 
   // pedir duas permisasões: BLUETOOTH_CONNECT, ACCESS_FINE_LOCATION
   return (
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.mainHeader}>
 
-        <View style={styles.mainHeader}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20}}>Scan & connect</Text>
-              <TouchableOpacity onPress={ScanAndConnect}>
-                <Icon name="clipboard-search" size={30} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity onPress={()=>{navigation.push("Home");}}>
-                <Icon name="home" size={30} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-            </View>
-
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20 }}>Scan & connect</Text>
+            <TouchableOpacity onPress={ScanAndConnect}>
+              <Icon name="clipboard-search" size={30} color={'#E9FFF9'} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={() => { navigation.push("Home"); }}>
+              <Icon name="home" size={30} color={'#E9FFF9'} />
+            </TouchableOpacity>
           </View>
 
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-
-          {devices.length > 0 ? (
-          <View>
-            <View style={styles.containerButtonsForAction}>
-              <TouchableOpacity onPress={getTheCurrentWeight} style={styles.buttonsForActions}>
-                <Text style={{fontSize: 20,color: '#E9FFF9', marginRight: 5}}>Peso</Text>
-                <Icon name='cow' size={24} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-            </View>
-
-            {/* Form */}
-            <View>
-              <Header theader={"Cadastro"}/>
-              <InputOptions peso={Weightt}/>
-            </View>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+      >
+        <View style={styles.containerModal}>
+          <View style={styles.instructions}>
+            <Text style={{ color: '#424242', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>Leia as instruções de como usar o App</Text>
           </View>
-          ) : (
-            <View style={styles.containerInstructions}>
-              <View style={styles.instructions}>
-                  <Text style={{color: '#424242', fontWeight: 'bold', fontSize: 18, textAlign: 'center'}}>Leia as instruções de como usar o App</Text>
-              </View>
-              <TouchableOpacity
-              style={styles.containerButtonToInstructions}
-              onPress={()=>navigation.push('Instructions')}>
-                  <Text style={{color: '#424242', fontWeight: 'bold', fontSize: 18, textAlign: 'center', marginRight: 5}}>Leia aqui</Text>
-                  <Icon name="tooltip-text" size={30} color={'#E9FFF9'}/>
-              </TouchableOpacity>
-            </View>
-          )}
+          <TouchableOpacity
+            style={styles.containerButtonToInstructions}
+            onPress={() => navigation.push('Instructions')}>
+            <Text style={{ color: '#424242', fontWeight: 'bold', fontSize: 18, textAlign: 'center', marginRight: 5 }}>Leia aqui</Text>
+            <Icon name="tooltip-text" size={30} color={'#E9FFF9'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.containerButtonToInsert}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={{ color: '#E9FFF9', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>Cadastrar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View>
+          <View style={styles.containerButtonsForAction}>
+            <TouchableOpacity onPress={getTheCurrentWeight} style={styles.buttonsForActions}>
+              <Text style={{ fontSize: 20, color: '#E9FFF9', marginRight: 5 }}>Peso</Text>
+              <Icon name='cow' size={24} color={devices.length > 0 ? '#A2E8AE' : '#ea7070'} />
+            </TouchableOpacity>
+          </View>
 
-        </ScrollView>
-      </SafeAreaView>
+          {/* Form */}
+          <View>
+            <Header theader={"Cadastro"} />
+            <InputOptions peso={Weightt} devices={devices} />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -506,6 +513,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  containerModal: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: '60%'
+  },
   containerButtonToInstructions: {
     flexDirection: 'row',
     width: 150,
@@ -516,6 +528,18 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
     backgroundColor: '#A2E8AE',
+    marginTop: 8
+  },
+  containerButtonToInsert: {
+    flexDirection: 'row',
+    width: 150,
+    height: 50,
+    elevation: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: '#3F51B5',
     marginTop: 8
   }
 });

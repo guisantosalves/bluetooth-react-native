@@ -1,3 +1,4 @@
 {
-    "jsdoc.author": "Witillan Souza"
+    "jsdoc.author": "Witillan Souza",
+    "git.ignoreLimitWarning": true
 }

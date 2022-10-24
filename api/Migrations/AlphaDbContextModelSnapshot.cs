@@ -109,6 +109,9 @@ namespace Api.Pesagem.Migrations
                     b.Property<string>("Idade")
                         .HasColumnType("text");
 
+                    b.Property<short>("Movimentacao")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("Observacao")
                         .HasColumnType("text");
 

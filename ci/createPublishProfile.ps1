@@ -7,8 +7,8 @@ $ns = "http://schemas.microsoft.com/developer/msbuild/2003"
 $_userName = "alphasoftware-001"
 
 # Criando as pastas do caminho do perfil de publicação
-New-Item -Path ".\" -Name "Properties" -ItemType "directory"
-New-Item -Path ".\Properties\" -Name "PublishProfiles" -ItemType "directory"
+New-Item -Path ".\" -Name "Properties" -ItemType "directory" -Force
+New-Item -Path ".\Properties\" -Name "PublishProfiles" -ItemType "directory" -Force
 
 
 # Criando documento XML e declaração

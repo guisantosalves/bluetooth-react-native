@@ -17,6 +17,8 @@ namespace Alpha.Pesagem.Api.Validation
             RuleFor(q => q.Sexo).NotNull();
             RuleFor(q => q.ValorMedio).NotNull();
             RuleFor(q => q.Observacao).MaximumLength(60);
+            RuleFor(q => q.Movimentacao).NotNull();
+            RuleFor(q => q.PesagemManual).NotNull();
         }
     }
     public class PesagemSaveEmLoteValidator : AbstractValidator<IEnumerable<Peso>>

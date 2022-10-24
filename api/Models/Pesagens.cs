@@ -17,5 +17,13 @@ namespace Alpha.Pesagem.Api.Models
         public DateTime DataCriacao { get; set; }
         public DateTime? DataAlteracao { get; set; }
         public int? IdAlphaExpress { get; set; }
+        public MovimentacaoTipo Movimentacao { get; set; }
+        public bool PesagemManual { get; set; }
+    }
+    
+    public enum MovimentacaoTipo : Int16
+    {
+        Entrada,
+        Saida
     }
 }

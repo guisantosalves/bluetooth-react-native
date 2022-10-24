@@ -20,9 +20,33 @@ import ButtonRaceCattle from "./ButtonRaceCattle";
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-const InputOptions = ({ peso }) => {
+const InputOptions = ({ peso, devices }) => {
+    const [pesoManual, setPesoManual] = React.useState('')
     const weightRef = React.useRef(null)
     const earingRef = React.useRef(null)
+
+    // variables for tipo de movimentação field
+    const movimentacaoArray = [
+        {
+            id: 0,
+            value: 'Entrada'
+        },
+        {
+            id: 1,
+            value: 'Saída'
+        }
+    ]
+    // variables for sexo field
+    const sexoArray = [
+        {
+            id: 1,
+            value: 'Macho'
+        },
+        {
+            id: 2,
+            value: 'Femea'
+        }
+    ]
 
     const getFocusInputWeight = () => {
         weightRef.current.focus()
@@ -96,6 +120,9 @@ const InputOptions = ({ peso }) => {
         sexo: Yup.string().required('Required'),
         valorMedio: Yup.number().required('Required'),
         observacao: Yup.string().max(60, 'Observação só é permitido até 60 caracteres'),
+        dataCriacao: Yup.date(),
+        pesoManual: Yup.bool().required('Required'),
+        tipoMovimentacao: Yup.number().required('Required')
     });
 
     React.useMemo(() => {
@@ -106,7 +133,7 @@ const InputOptions = ({ peso }) => {
 
     return (
         <Formik
-            initialValues={{ peso: peso, brinco: '', brincoEletronico: '', idade: '', raca: '', sexo: '', valorMedio: '', observacao: '' }}
+            initialValues={{ peso: peso ? peso : 0, brinco: '', brincoEletronico: '', idade: '', raca: '', sexo: '', valorMedio: '', observacao: '', dataCriacao: new Date, pesoManual: !(devices.length > 0),  tipoMovimentacao: 0}}
             onSubmit={(values, { resetForm }) => {
                 insertingInRealmDB(values)
                 resetForm()
@@ -116,11 +143,21 @@ const InputOptions = ({ peso }) => {
             {({ handleChange, handleSubmit, values, errors, touched, setFieldValue, resetForm }) => (
                 <KeyboardAvoidingView>
                     <View style={style.container}>
+                    {/* Operation Type */}
+                    <Text style={style.textColor}>Tipo da Movimentação</Text>
+                    <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around', padding: 3 }}>
+                        <RadioButton array={movimentacaoArray} onSelected={(value) => {setFieldValue('tipoMovimentacao', value)}} />
+                    </View>
+                    {errors.tipoMovimentacao && touched.tipoMovimentacao ? (
+                        <Text style={style.textRequired}>{errors.tipoMovimentacao}</Text>
+                    ) : null}
+                    {/* weight */}
                         <View style={style.viewRow}>
                             <Text style={style.textColor}>Peso</Text>
                         </View>
                         <View style={style.inputStyle}>
-                            <TextInput ref={weightRef} value={values.peso} onFocus={() => { setFieldValue('peso', peso), getFocusInputEaring() }} onChangeText={handleChange('peso')} numberOfLines={2} keyboardType="none" />
+                            {peso ? <TextInput ref={weightRef} value={values.peso} onFocus={() => { setFieldValue('peso', peso), getFocusInputEaring() }} onChangeText={handleChange('peso')} numberOfLines={2} keyboardType="none" />
+                            : <TextInput ref={weightRef} value={values.peso} onChangeText={(p) => { setFieldValue('peso', p)}} numberOfLines={2} keyboardType="numeric" />}
                         </View>
                         {errors.peso && touched.peso ? (
                             <Text style={style.textRequired}>{errors.peso}</Text>
@@ -170,7 +207,7 @@ const InputOptions = ({ peso }) => {
                     {/*  radio button sex */}
                     <Text style={style.textColor}>Sexo</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', padding: 3 }}>
-                        <RadioButton getValue={(value) => setFieldValue('sexo', value)} />
+                        <RadioButton array={sexoArray} onSelected={(value) => {setFieldValue('sexo', value)}} />
                     </View>
                     {errors.sexo && touched.sexo ? (
                         <Text style={style.textRequired}>{errors.sexo}</Text>
