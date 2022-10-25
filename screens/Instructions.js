@@ -23,8 +23,8 @@ const Instructions = ({navigation}) => {
         <View style={styles.geralContainer}>
             <View style={styles.boxInstructions}>
                 <Text style={styles.textPrimary}>Para usar o aplicativo deverá ter o bastão e a balança em mãos, podendo um ser usado sem o outro.</Text>
-                <Text style={styles.textPrimary}>1 - conecte-se ao bastão.</Text>
-                <Text style={styles.textPrimary}>2 - ligue a balança.</Text>
+                <Text style={styles.textPrimary}>1 - Conecte-se ao bastão.</Text>
+                <Text style={styles.textPrimary}>2 - Ligue a balança.</Text>
                 <Text style={styles.textPrimary}>3 - Fique em uma distância até 2 metros da balança e do bastão.</Text>
 
                 <View style={styles.subBoxDoubt}>

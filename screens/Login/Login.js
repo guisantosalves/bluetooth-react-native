@@ -39,7 +39,7 @@ export default function Login({ onSubmit, fazendas }) {
                                 onValueChange={(value, _) => setId(value)}>
                                 <Picker.Item color='wigth' key={'fazenda-selecione'} value="" label="Selecione" />
                                 {(fazendas || []).map((item, key) => <Picker.Item color='wight' key={`fazenda-${key}`} value={item.key} label={item.nome} />)}
-                            </Picker>{console.log(fazendas)}
+                            </Picker>
                         </View>
                         <View style={{ width: '100%', marginTop: 10 }}>
                             <TouchableOpacity

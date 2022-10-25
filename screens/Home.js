@@ -56,7 +56,7 @@ const Home = ({ navigation }) => {
           }
         })
       } else {
-        alert("nao deu")
+        alert("Falha ao buscar dados do AsyncStorage")
       }
     } catch (e) {
       alert(e)
@@ -121,10 +121,10 @@ const Home = ({ navigation }) => {
     if (dataToDisplayFromAS.length > 0) {
       console.log(dataToDisplayFromAS[1])
       // mounting the csv file
-      const headerString = `Brinco,Brinco Eletronico,Peso,Idade,Sexo,Raca,Valor\n`;
+      const headerString = `Brinco,Brinco Eletronico,Peso,Peso Manual,Idade,Sexo,Raca,Valor,Movimentação,Data\n`;
 
       // tem que ser sem o {} pois está retornando e não executando de fato
-      const rowString = dataToDisplayFromAS.map((item, index) => `${item.brinco},${item.brincoEletronico},${item.peso},${item.idade},${item.sexo},${item.raca},${item.valorMedio}\n`,
+      const rowString = dataToDisplayFromAS.map((item, index) => `${item.brinco},${item.brincoEletronico},${item.peso},${item.pesoManual},${item.idade},${item.sexo},${item.raca},${item.valorMedio},${item.tipoMovimentacao},${item.dataCriacao}\n`,
       ).join('')
 
       // console.log(rowString)

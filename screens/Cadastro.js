@@ -21,12 +21,14 @@ import InputOptions from '../components/InputOptions';
 
 // icons
 // components
-const Cadastro = ({navigation}) => {
+const Cadastro = ({ navigation }) => {
+
   const manager = new BleManager();
   const serv = new Service(NativeDevice, manager);
 
   // States Of The Application
-  const [Weightt, setWeightt] = useState();
+  const [Weightt, setWeightt] = useState()
+  const [modalVisible, setModalVisible] = useState(true)
 
   const [dataFromASstate, setdataFromASstate] = useState();
   const [stopScan, setstopScan] = useState(false);
@@ -43,8 +45,8 @@ const Cadastro = ({navigation}) => {
 
   // using redux
   const dispatch = useDispatch();
-  const [deviceConnectedInStore, setdeviceConnectedInStore] = useState();
-  const deviceFromStore = useSelector(state => state.counter.requestDevice);
+  const deviceOnStore = useSelector((state) => state.counter.requestDevice)
+  const [deviceConnectedInStore, setdeviceConnectedInStore] = useState()
 
   // setting data to the weight works
   const [services, setServices] = useState();
@@ -54,14 +56,13 @@ const Cadastro = ({navigation}) => {
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'permissão de localização para o bluetooth scanning',
-          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
-          buttonNeutral: 'Perguntar depois',
-          buttonNegative: 'Cancelar',
-          buttonPositive: 'OK',
-        },
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
+        title: 'permissão de localização para o bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission for bluetooth scanning granted');
@@ -74,19 +75,18 @@ const Cadastro = ({navigation}) => {
       console.log(err);
       return false;
     }
-  };
+  }
 
   const requestBLUETOOTH_ADMINPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        {
-          title: 'Location permission for bluetooth scanning',
-          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
-          buttonNeutral: 'Perguntar depois',
-          buttonNegative: 'Cancelar',
-          buttonPositive: 'OK',
-        },
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT, {
+        title: 'Location permission for bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission for bluetooth scanning granted');
@@ -99,19 +99,18 @@ const Cadastro = ({navigation}) => {
       console.log(err);
       return false;
     }
-  };
+  }
 
   const BLUETOOTH_ADVERTISErequestPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-        {
-          title: 'Location permission for bluetooth scanning',
-          message: 'Nós precisamos dessa permissão para rodar o bluetooth',
-          buttonNeutral: 'Perguntar depois',
-          buttonNegative: 'Cancelar',
-          buttonPositive: 'OK',
-        },
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+        title: 'Location permission for bluetooth scanning',
+        message: 'Nós precisamos dessa permissão para rodar o bluetooth',
+        buttonNeutral: 'Perguntar depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+      },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission for bluetooth scanning granted');
@@ -124,7 +123,7 @@ const Cadastro = ({navigation}) => {
       console.log(err);
       return false;
     }
-  };
+  }
 
   const WriteAndReadDataRequestPermission = async () => {
     try {
@@ -133,70 +132,69 @@ const Cadastro = ({navigation}) => {
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
       ]);
     } catch (err) {
-      alert(err);
+      alert(err)
     }
-    const readGranted = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    );
-    const writeGranted = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    );
+    const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
 
     // if writeGranted doesn't exist
     if (!writeGranted || writeGranted == false || !readGranted) {
-      alert('não podemos escrever no seu dispositivo.');
+      alert("não podemos escrever no seu dispositivo.")
       return;
     }
-  };
+  }
 
   // pega características de algo ja pareado
-  const getData = theBalance => {
-    theBalance[1]
-      .connect()
-      .then(balance => {
-        return balance.discoverAllServicesAndCharacteristics();
+  const getData = (theBalance) => {
+
+    theBalance[1].connect().then((balance) => {
+
+      return balance.discoverAllServicesAndCharacteristics();
+
+    })
+      .then((data) => {
+        return data
       })
-      .then(data => {
-        return data;
-      })
-      .then(dataComplet => {
-        let base64Stringg = Buffer.from('{RW}').toString('base64');
-        dataComplet
-          .writeCharacteristicWithResponseForService(
-            '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-            '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
-            base64Stringg,
-          )
-          .then(result => {
-            return result;
-          })
-          .then(() => {
-            dataComplet.monitorCharacteristicForService(
-              '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-              '6e400003-b5a3-f393-e0a9-e50e24dcca9e',
-              (err, cha) => {
-                console.log(err);
-                try {
-                  let weight_transformed = base64.decode(cha.value);
-                  setgettingWeight(weight_transformed);
-                  return;
-                } catch (err) {
-                  console.log('error', err);
-                }
-              },
-            );
-          })
-          .catch(errr => {
-            console.log('error', errr);
+      .then((dataComplet) => {
+
+        let base64Stringg = Buffer.from("{RW}").toString('base64')
+        dataComplet.writeCharacteristicWithResponseForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400002-b5a3-f393-e0a9-e50e24dcca9e", base64Stringg)
+          .then((result) => {
+
+            return result
+
+          }).then(() => {
+
+            dataComplet.monitorCharacteristicForService("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "6e400003-b5a3-f393-e0a9-e50e24dcca9e", (err, cha) => {
+              console.log(err)
+              try {
+                let weight_transformed = base64.decode(cha.value)
+                setgettingWeight(weight_transformed)
+                return
+              } catch (err) {
+                console.log("error", err)
+              }
+
+            })
+
+          }).catch((errr) => {
+
+            console.log("error", errr)
+
           });
+
       })
       .catch(err => {
-        console.log('error', err);
+
+        console.log("error", err)
+
+      }).finally(() => {
+
+        alert(gettingWeight)
+
       })
-      .finally(() => {
-        alert(gettingWeight);
-      });
-  };
+
+  }
 
   const permissions = () => {
     requestLocationPermission();
@@ -212,68 +210,62 @@ const Cadastro = ({navigation}) => {
   const ScanAndConnect = async () => {
     permissions();
 
-    manager.startDeviceScan(
-      null,
-      {allowDuplicates: false},
-      (error, listOfDevices) => {
-        if (error) {
-          // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
-          alert(error);
 
-          return;
-        }
+    permissions()
 
-        // console.log(listOfDevices)
-        //C7:C6:8B:C9:9F:2D -> outra balança
+    manager.startDeviceScan(null, { allowDuplicates: false }, (error, listOfDevices) => {
 
-        if (!deviceFromStore) return;
+      if (error) {
 
-        if (listOfDevices?.localName?.includes(`${deviceFromStore}`)) {
-          setDevices(oldarray => [...oldarray, listOfDevices]);
-          manager.stopDeviceScan();
-        } else {
-          alert('coloque o nome correto da balança');
-          manager.stopDeviceScan();
-        }
-        // if(listOfDevices.id == "F3:5A:0D:88:FB:7D"){
+        // erro resolvido fazendo a request do ACCESS_FINE_LOCATION
+        alert(error)
 
-        //   setDevices(oldArray=>[...oldArray, listOfDevices])
-        //   console.log(devices)
-        //   manager.stopDeviceScan()
-        // }
+        return
+      }
 
-        // espera terminar todo o scan e espera 1 sec pra dar o stop
-        //  setTimeout(()=>{
-        //   manager.stopDeviceScan()
-        //   setIsScanFinished(true)
-        //   console.log("finished scanning")
-        //   }, 5000)
-      },
-    );
-  };
+      if (listOfDevices.id == "C7:C6:8B:C9:9F:2D") {
+
+        setDevices(oldArray => [...oldArray, listOfDevices])
+        console.log(devices)
+        manager.stopDeviceScan()
+      }
+
+      // espera terminar todo o scan e espera 1 sec pra dar o stop
+      //  setTimeout(()=>{
+      //   manager.stopDeviceScan()
+      //   setIsScanFinished(true)
+      //   console.log("finished scanning")
+      // }, 1000)
+    });
+
+
+  }
 
   React.useEffect(() => {
-    const subscription = manager.onStateChange(state => {
+
+    const subscription = manager.onStateChange((state) => {
+
       if (state === 'PoweredOn') {
+
         // ScanAndConnect()
-        console.log('Bluetooth ligado');
+        console.log("Bluetooth ligado")
+
       } else {
-        Alert.alert(
-          'Bluetooth desligado',
-          'Você precisa ligar o bluetooth e conectar na balança',
-          [
-            {
-              text: 'Cancelar',
-              onPress: () => console.log('apertou cancelar'),
-              style: 'cancel',
-            },
-            {
-              text: 'ok',
-              onPress: () => console.log('apertou ok'),
-            },
-          ],
-        );
+
+        Alert.alert("Bluetooth desligado", "Você precisa ligar o bluetooth e conectar na balança", [
+          {
+            text: "Cancelar",
+            onPress: () => console.log("apertou cancelar"),
+            style: "cancel"
+          },
+          {
+            text: "ok",
+            onPress: () => console.log("apertou ok"),
+          }
+        ])
+
       }
+
     }, true);
 
     getItemFromAS();
@@ -387,10 +379,10 @@ const Cadastro = ({navigation}) => {
 
   const action = [
     {
-      text: 'Home',
+      text: "Home",
       icon: <Icon name="home" size={30} color={'#E9FFF9'} />,
-      name: 'home',
-      position: 1,
+      name: "home",
+      position: 1
     },
   ];
 
@@ -569,6 +561,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  containerModal: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: '60%'
+  },
   containerButtonToInstructions: {
     flexDirection: 'row',
     width: 150,
@@ -591,6 +588,18 @@ const styles = StyleSheet.create({
     elevation: 10,
     backgroundColor: '#A2E8AE',
   },
+  containerButtonToInsert: {
+    flexDirection: 'row',
+    width: 150,
+    height: 50,
+    elevation: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: '#3F51B5',
+    marginTop: 8
+  }
 });
 
 export default Cadastro;
