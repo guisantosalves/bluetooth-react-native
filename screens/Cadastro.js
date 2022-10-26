@@ -424,8 +424,7 @@ const Cadastro = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* {devices.length > 0 && deviceOnStore ? true : false ? ( */}
-        {false ? (
+        {devices.length > 0 && deviceOnStore ? true : false ? (
           <View>
             <View style={styles.containerButtonsForAction}>
               <TouchableOpacity

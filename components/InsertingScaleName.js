@@ -8,10 +8,15 @@ import {
   Text,
   TextInput,
   View,
+  ScrollView
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {requestDevice} from '../features/appSlice';
+import SQLite from 'react-native-sqlite-storage';
+import CardScale from './CardScale';
 import { useNavigation } from '@react-navigation/native';
+
+SQLite.enablePromise(true)
 
 const InsertingScaleName = () => {
   const [nameOfScale, setNameOfScale] = React.useState('');
@@ -42,12 +47,23 @@ const InsertingScaleName = () => {
     }
   };
 
-  const saving = () => {
+  const saving = async () => {
     dispatch(
       requestDevice({
         requestDevice: nameOfScale,
       }),
     );
+
+    let db = await SQLite.openDatabase({name: 'fazenda.db'});
+
+    await db.executeSql(`
+      CREATE TABLE IF NOT EXISTS balancas (ID INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, createdAt TEXT)
+    `)
+    
+    await db.executeSql(`
+      INSERT INTO balancas (nome, createdAt) VALUES ('${nameOfScale}', '${new Date()}')
+    `)
+    
     navigation.push("Cadastro")
   };
 
@@ -66,6 +82,9 @@ const InsertingScaleName = () => {
       <Pressable style={style.button} onPress={handleSubmit}>
         <Text style={style.text}>Salvar</Text>
       </Pressable>
+      <View style={{marginTop: 16}}>
+        <CardScale nameOfScale={setNameOfScale}/>
+      </View>
     </View>
   );
 };

@@ -65,7 +65,6 @@ export default function ({ navigation }) {
     }, [width, openModal])
 
     const onSubmit = async (id) => {
-        console.log(id)
         if (!id){
             return alert('Você precisa selecionar uma fazenda!')
         } else {
