@@ -10,7 +10,7 @@ const User = () => {
 
       <View style={style.containerHead}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>FORBOV</Text>
+          <Text style={{marginRight: 10, fontWeight: '800', color: '#E9FFF9', fontSize: 20, letterSpacing: 3}}>SIMETRY</Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={()=>navigation.push('Home')} style={{marginRight: 5}}>
               <Icon name="file-text" size={30} color={'#E9FFF9'}/>
