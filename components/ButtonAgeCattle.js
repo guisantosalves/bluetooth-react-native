@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 

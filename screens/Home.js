@@ -7,14 +7,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import IconIonicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
+import SQLite from 'react-native-sqlite-storage';
+import uuid from 'react-native-uuid';
+
+SQLite.enablePromise(true);
 
 // icons
 // redux
 const Home = ({ navigation }) => {
 
-  const requestsFromUser = useSelector((state) => state.counter.requestResult)
+  const requestsFromUser = useSelector((state) => state.counter.requestResult);
+  const requestFazenda = useSelector((state) => state.counter.requestFazenda);
 
-  const [dataToDisplayFromAS, setdataToDisplayFromAS] = React.useState([])
+  const [dataToDisplayFromSQLite, setdataToDisplayFromSQLite] = React.useState([])
 
   const [requestVerification, setrequestVerification] = React.useState()
   const action = [
@@ -44,27 +49,60 @@ const Home = ({ navigation }) => {
     }
   ]
 
-  const gettingItem = async () => {
-    try {
-      const allkeys = await AsyncStorage.getAllKeys()
-      const dataFromAS = await AsyncStorage.multiGet(allkeys)
+  // const gettingItem = async () => {
+  //   try {
+  //     const allkeys = await AsyncStorage.getAllKeys()
+  //     const dataFromAS = await AsyncStorage.multiGet(allkeys)
 
-      if (dataFromAS !== null) {
-        dataFromAS.map((item, index) => {
-          if (item[0] != "@permissions" && item[0] != "fazenda") {
-            setdataToDisplayFromAS(oldValue => [...oldValue, JSON.parse(item[1])])
+  //     if (dataFromAS !== null) {
+  //       dataFromAS.map((item, index) => {
+  //         if (item[0] != "@permissions" && item[0] != "fazenda") {
+  //           setdataToDisplayFromSQLite(oldValue => [...oldValue, JSON.parse(item[1])])
+  //         }
+  //       })
+  //     } else {
+  //       alert("Falha ao buscar dados do AsyncStorage")
+  //     }
+  //   } catch (e) {
+  //     alert(e)
+  //   }
+  // }
+
+  const countItems = (results) => {
+    console.log(dataToDisplayFromSQLite)
+    // let i = 0;
+    // while(i < results.length){
+    //   console.log(results[0].rows.item(i))
+    //   console.log(i)
+    //   i++
+    // }
+  }
+
+  const startingDataBase = async () => {
+    try{
+      // creating database and accessing it
+      let db = await SQLite.openDatabase({name: 'fazenda.db'})
+
+      db.transaction(tx => {
+        tx.executeSql(`
+        SELECT * FROM Pesagem WHERE fazenda = ${requestFazenda}
+        `,
+        [],
+        (tx, results)=>{
+          for(let i = 0; i < results.rows.length; i++){
+            setdataToDisplayFromSQLite(oldvalue => [...oldvalue, results.rows.item(i)])
           }
         })
-      } else {
-        alert("Falha ao buscar dados do AsyncStorage")
-      }
-    } catch (e) {
-      alert(e)
+      })
+
+    }catch(e){
+      console.log(e)
     }
   }
 
   React.useEffect(() => {
-    gettingItem()
+    // gettingItem()
+    startingDataBase()
   }, [])
 
   const verifyRace = (id) => {
@@ -116,15 +154,16 @@ const Home = ({ navigation }) => {
 
   const saveCSV = () => {
     // getting the path from device
-    const path = RNFS.DownloadDirectoryPath + `/pesagens.csv`;
+    const path = RNFS.DownloadDirectoryPath + `/pesagens${uuid.v4()}.csv`;
 
-    if (dataToDisplayFromAS.length > 0) {
-      console.log(dataToDisplayFromAS[1])
+    if (dataToDisplayFromSQLite.length > 0) {
+    
       // mounting the csv file
-      const headerString = `Brinco,Brinco Eletronico,Peso,Peso Manual,Idade,Sexo,Raca,Valor,Movimentação,Data\n`;
+      const headerString = `Brinco,Brinco Eletronico,Peso,Peso Manual,Idade,Sexo,Raca,Valor,Movimentação,Data,Fazenda\n`;
 
+      console.log(dataToDisplayFromSQLite)
       // tem que ser sem o {} pois está retornando e não executando de fato
-      const rowString = dataToDisplayFromAS.map((item, index) => `${item.brinco},${item.brincoEletronico},${item.peso},${item.pesoManual},${item.idade},${item.sexo},${item.raca},${item.valorMedio},${item.tipoMovimentacao},${item.dataCriacao}\n`,
+      const rowString = dataToDisplayFromSQLite.map((item, index) => `${item.brinco},${item.brincoEletronico},${item.peso},${item.pesoManual},${item.idade},${item.sexo},${item.raca},${item.valorMedio},${item.tipoMovimentacao},${item.dataCriacao},${item.fazenda}\n`,
       ).join('')
 
       // console.log(rowString)
@@ -163,8 +202,8 @@ const Home = ({ navigation }) => {
 
   const sync = async () => {
     try {
-      if (dataToDisplayFromAS.length > 0) {
-        console.log(dataToDisplayFromAS)
+      if (dataToDisplayFromSQLite.length > 0) {
+        console.log(dataToDisplayFromSQLite)
       } else {
         fetch()
       }
@@ -173,6 +212,7 @@ const Home = ({ navigation }) => {
     }
   }
 
+  // console.log(dataToDisplayFromSQLite)
   return (
     <SafeAreaView style={styles.container}>
       <>
@@ -190,7 +230,7 @@ const Home = ({ navigation }) => {
           </View>
         </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%', padding: 10 }}>
-          {dataToDisplayFromAS.map((item, index) => (
+          {dataToDisplayFromSQLite.map((item, index) => (
             <View key={index} style={{ borderWidth: 2, borderColor: 'blue', height: 158, borderRadius: 5, backgroundColor: '#E9FFF9', marginTop: 5, marginBottom: 15 }}>
               <View style={{
                 width: '100%', height: 45, borderTopRightRadius: 3, borderTopLeftRadius: 3, backgroundColor: '#3F51B5',

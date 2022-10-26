@@ -4,17 +4,22 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import uuid from "react-native-uuid";
+import { useSelector,  useDispatch} from 'react-redux';
+import {requestFazenda} from "../../features/appSlice";
 
 import Splash from '../Splash';
 import Login from './Login';
 
 export default function ({ navigation }) {
-    const [fazendas, setFazendas] = useState([{ nome: 'Taboca', key: 1 }, { nome: 'Sao Jose', key: 2 }])
+    const [fazendas, setFazendas] = useState([{ nome: 'Taboca', key: 56 }, { nome: 'Sao Jose', key: 57 }])
     const [fazendaLogada, setFazendaLogada] = useState(null)
     const [openSplashScreen, setOpenSplashScreen] = useState(true)
     const [openModal, setOpenModal] = useState(false)
     const [width, setWidth] = useState(null)
     const [widthTotal, setWidthTotal] = useState(100)
+    
+    // redux
+    const dispatch = useDispatch();
 
     const buscarFazendaLogada = async () => {
         const fazenda = await AsyncStorage.getItem('fazenda')
@@ -28,23 +33,10 @@ export default function ({ navigation }) {
         try {
             setOpenModal(true)
             setWidth(0)
-            await AsyncStorage.setItem('fazenda', JSON.stringify(fazendaLogada))
 
-            const objetToInsert = {
-                fazenda: id,
-                brinco: '0123456789',
-                brincoEletronico: '0123456789',
-                peso: 200.0,
-                idade: 1,
-                raca: 2,
-                valorMedio: 2000,
-                sexo: 1,
-            }
-            console.log(objetToInsert)
-
-            const jsonValue = JSON.stringify(objetToInsert)
-
-            await AsyncStorage.setItem(`${uuid.v4()}`, jsonValue)
+            dispatch(requestFazenda({
+                requestFazenda: id,
+            }))
 
         } catch (error) {
             alert(error)

@@ -270,7 +270,7 @@ const Cadastro = ({ navigation }) => {
 
     getItemFromAS();
 
-    if(deviceFromStore) {
+    if(deviceOnStore) {
       ScanAndConnect()
     }
 
@@ -408,7 +408,7 @@ const Cadastro = ({ navigation }) => {
             </Text>
             <TouchableOpacity
               onPress={ScanAndConnect}
-              disabled={deviceFromStore ? true : false}>
+              disabled={deviceOnStore ? true : false}>
               <Icon name="clipboard-search" size={30} color={'#E9FFF9'} />
             </TouchableOpacity>
           </View>
@@ -424,7 +424,8 @@ const Cadastro = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {devices.length > 0 && deviceFromStore ? true : false ? (
+        {/* {devices.length > 0 && deviceOnStore ? true : false ? ( */}
+        {false ? (
           <View>
             <View style={styles.containerButtonsForAction}>
               <TouchableOpacity
@@ -445,7 +446,7 @@ const Cadastro = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.containerInstructions}>
-            {deviceFromStore && (
+            {deviceOnStore && (
               <Text
                 style={{
                   color: '#424242',
@@ -453,7 +454,7 @@ const Cadastro = ({ navigation }) => {
                   fontSize: 18,
                   textAlign: 'center',
                 }}>
-                Balança escolhida: {deviceFromStore}
+                Balança escolhida: {deviceOnStore}
               </Text>
             )}
             <View style={styles.instructions}>

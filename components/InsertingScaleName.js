@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {Button} from '@react-native-material/core';
 import React from 'react';
 import {
