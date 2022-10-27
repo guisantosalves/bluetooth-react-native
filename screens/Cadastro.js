@@ -15,6 +15,7 @@ import base64 from 'react-native-base64';
 import {BleManager, NativeDevice, Service} from 'react-native-ble-plx';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 import Header from '../components/Header';
 import InputOptions from '../components/InputOptions';
@@ -274,10 +275,14 @@ const Cadastro = ({ navigation }) => {
       ScanAndConnect()
     }
 
+    navigation.addListener('beforeRemove', (e) => {
+        e.preventDefault();
+    })
+
     return () => {
       subscription.remove();
     };
-  }, [manager]);
+  }, [manager, navigation]);
 
   const gettingFromChild = value => {
     // get value from child and pass to the getData
@@ -424,24 +429,10 @@ const Cadastro = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {devices.length > 0 && deviceOnStore ? true : false ? (
+        {/* {devices.length > 0 && deviceOnStore ? true : false ? ( */}
+        { true ? (
           <View>
-            <View style={styles.containerButtonsForAction}>
-              <TouchableOpacity
-                onPress={getTheCurrentWeight}
-                style={styles.buttonsForActions}>
-                <Text style={{fontSize: 20, color: '#E9FFF9', marginRight: 5}}>
-                  Peso
-                </Text>
-                <Icon name="cow" size={24} color={'#E9FFF9'} />
-              </TouchableOpacity>
-            </View>
-
-            {/* Form */}
-            <View>
-              <Header theader={'Cadastro'} />
-              <InputOptions peso={Weightt} />
-            </View>
+            <InputOptions peso={Weightt} functionGetWeight={getTheCurrentWeight}/>
           </View>
         ) : (
           <View style={styles.containerInstructions}>

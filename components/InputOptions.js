@@ -19,27 +19,26 @@ import uuid from 'react-native-uuid';
 import ButtonRaceCattle from './ButtonRaceCattle';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import SQLite from 'react-native-sqlite-storage';
 
 SQLite.enablePromise(true);
 
-const InputOptions = ({peso, devices}) => {
+const InputOptions = ({peso, devices, functionGetWeight}) => {
   const [pesoManual, setPesoManual] = React.useState('');
   const weightRef = React.useRef(null);
   const earingRef = React.useRef(null);
 
   // redux
-  const fazendaSelector = useSelector((state)=>state.counter.requestFazenda);
+  const fazendaSelector = useSelector(state => state.counter.requestFazenda);
 
   // db -> transaction -> tx
-  const creatingTableAndInsertingIt = async() => {
-
-    let db = await SQLite.openDatabase({name: 'fazenda.db'})
+  const creatingTableAndInsertingIt = async () => {
+    let db = await SQLite.openDatabase({name: 'fazenda.db'});
 
     await db.executeSql(`
         'CREATE TABLE IF NOT EXISTS Pesagens (ID INTEGER PRIMARY KEY AUTOINCREMENT, tipoMovimentacao INTEGER, peso REAL, brinco TEXT, brincoEL TEXT, idade INTEGER, raca INTEGER, sexo INTEGER, custoMedio REAL, observacao TEXT)
-    `)
+    `);
 
     // db.transaction(tx => {
     //   tx.executeSql(
@@ -95,19 +94,18 @@ const InputOptions = ({peso, devices}) => {
       //   pesoManual: !(devices.length > 0),
       //   tipoMovimentacao: 0,
 
-
-      let db = await SQLite.openDatabase({name: 'fazenda.db'})
+      let db = await SQLite.openDatabase({name: 'fazenda.db'});
       await db.executeSql(`
       CREATE TABLE IF NOT EXISTS Pesagem (ID INTEGER PRIMARY KEY AUTOINCREMENT, tipoMovimentacao INTEGER, peso REAL, brinco TEXT, brincoEletronico TEXT, idade INTEGER, raca INTEGER, sexo INTEGER, valorMedio REAL, observacao TEXT, dataCriacao TEXT, pesoManual TEXT, fazenda TEXT)
-      `)
-    
-      if(db){
+      `);
+
+      if (db) {
         db.executeSql(`
         INSERT INTO Pesagem (tipoMovimentacao, peso, brinco, brincoEletronico, idade, raca, sexo, valorMedio, observacao, dataCriacao, pesoManual, fazenda)
         VALUES (${values.tipoMovimentacao}, ${values.peso}, '${values.brinco}', '${values.brincoEletronico}', ${values.idade}, ${values.raca}, ${values.sexo}, ${values.valorMedio}, '${values.observacao}', '${values.dataCriacao}', '${values.pesoManual}', '${fazendaSelector}')
-        `)
+        `);
       }
-    
+
       alert('Cadastrado com sucesso');
     } catch (e) {
       console.log(e);
@@ -162,7 +160,6 @@ const InputOptions = ({peso, devices}) => {
     }
   }, [peso]);
 
-
   return (
     <Formik
       initialValues={{
@@ -175,7 +172,7 @@ const InputOptions = ({peso, devices}) => {
         valorMedio: '',
         observacao: '',
         dataCriacao: new Date(),
-        pesoManual: !(devices.length > 0),
+        pesoManual: !(devices?.length > 0),
         tipoMovimentacao: 0,
       }}
       onSubmit={(values, {resetForm}) => {
@@ -198,7 +195,7 @@ const InputOptions = ({peso, devices}) => {
             <Text style={style.textColor}>Tipo da Movimentação</Text>
             <View
               style={{
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-around',
                 padding: 3,
@@ -209,43 +206,59 @@ const InputOptions = ({peso, devices}) => {
                   setFieldValue('tipoMovimentacao', value);
                 }}
               />
+              <TouchableOpacity 
+                onPress={functionGetWeight}
+                style={style.buttonActionGetPeso}
+                >
+                <Text style={{fontSize: 18, fontWeight: 'bold', letterSpacing: 1, color: 'white', marginRight: 5}}>PESO</Text>
+                <Icon name='cow' size={24} color={'white'}/>
+              </TouchableOpacity>
             </View>
             {errors.tipoMovimentacao && touched.tipoMovimentacao ? (
               <Text style={style.textRequired}>{errors.tipoMovimentacao}</Text>
             ) : null}
+
             {/* weight */}
             <View style={style.viewRow}>
               <Text style={style.textColor}>Peso</Text>
             </View>
-            <View style={style.inputStyle}>
-              {peso ? (
-                <TextInput
-                  ref={weightRef}
-                  value={values.peso}
-                  onFocus={() => {
-                    setFieldValue('peso', peso), getFocusInputEaring();
-                  }}
-                  onChangeText={handleChange('peso')}
-                  numberOfLines={2}
-                  keyboardType="none"
-                />
-              ) : (
-                <TextInput
-                  ref={weightRef}
-                  value={values.peso}
-                  onChangeText={p => {
-                    setFieldValue('peso', p);
-                  }}
-                  numberOfLines={2}
-                  keyboardType="numeric"
-                />
-              )}
-            </View>
-            {errors.peso && touched.peso ? (
-              <Text style={style.textRequired}>{errors.peso}</Text>
-            ) : null}
-          </View>
+            <View>
+                <View
+                  style={{ 
+                    elevation: 1,
+                    borderRadius: 999,
+                    paddingLeft: 8,
+                    backgroundColor: '#E9FFF9',
+                  }}>
+                  {peso ? (
+                    <TextInput
+                      ref={weightRef}
+                      value={values.peso}
+                      onFocus={() => {
+                        setFieldValue('peso', peso), getFocusInputEaring();
+                      }}
+                      onChangeText={handleChange('peso')}
+                      numberOfLines={2}
+                      keyboardType="none"
+                    />
+                  ) : (
+                    <TextInput
+                      ref={weightRef}
+                      value={values.peso}
+                      onChangeText={p => {
+                        setFieldValue('peso', p);
+                      }}
+                      numberOfLines={2}
+                      keyboardType="numeric"
+                    />
+                  )}
+                </View>
+                {errors.peso && touched.peso ? (
+                  <Text style={style.textRequired}>{errors.peso}</Text>
+                ) : null}
+              </View>
 
+            </View>
           {/* earings */}
           <View style={style.container}>
             <Text style={style.textColor}>Brinco</Text>
@@ -405,4 +418,14 @@ const style = StyleSheet.create({
   viewRow: {
     flexDirection: 'row',
   },
+  buttonActionGetPeso: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#424242',
+    elevation: 10
+  }
 });
